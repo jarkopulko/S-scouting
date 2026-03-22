@@ -1,0 +1,2368 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SK Sigma Ołomuniec – Arkusze obserwacyjne</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  :root {
+    --sigma-blue: #003f8a;
+    --sigma-light: #1565c0;
+    --accent: #e8f0fe;
+    --border: #c5d3e8;
+    --text: #0d1b2a;
+    --muted: #5a6a80;
+    --section-bg: #f4f7fc;
+    --white: #ffffff;
+    --tag-bg: #dce8ff;
+    --answer-bg: #f8fbff;
+    --body-bg: #eef2f9;
+  }
+
+  body.dark {
+    --sigma-blue: #5b8dee;
+    --sigma-light: #7aaaf5;
+    --accent: #0f1f38;
+    --border: #1e3050;
+    --text: #d0ddf0;
+    --muted: #6888aa;
+    --section-bg: #0c1828;
+    --white: #0f1f35;
+    --tag-bg: #0a1828;
+    --answer-bg: #0c1828;
+    --body-bg: #08111e;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'IBM Plex Sans', sans-serif;
+    background: var(--body-bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 16px 10px 100px;
+    -webkit-text-size-adjust: 100%;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  /* ── HEADER ── */
+  .page-header {
+    max-width: 980px;
+    margin: 0 auto 20px;
+    border-bottom: 3px solid var(--sigma-blue);
+    padding-bottom: 14px;
+  }
+  .header-top {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 12px;
+  }
+  .logo-badge {
+    background: var(--sigma-blue); color: white;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px; font-weight: 500; letter-spacing: 0.12em;
+    padding: 7px 10px; text-transform: uppercase; line-height: 1.7; flex-shrink: 0;
+  }
+  .page-title h1 { font-size: 17px; font-weight: 700; color: var(--sigma-blue); letter-spacing: -0.02em; line-height: 1.2; }
+  .page-title p { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .header-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .btn {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
+    padding: 10px 14px; border: 2px solid; cursor: pointer;
+    transition: all 0.15s; white-space: nowrap;
+    /* Touch-friendly min size */
+    min-height: 40px;
+  }
+  .btn-export { background: var(--sigma-blue); border-color: var(--sigma-blue); color: white; }
+  .btn-export:active { background: var(--sigma-light); }
+  .btn-clear { background: var(--white); border-color: #c9313a; color: #c9313a; }
+  .btn-clear:active { background: #c9313a; color: white; }
+  .btn-observe {
+    background: var(--white);
+    border-color: #1b5e20;
+    color: #1b5e20;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn-observe:active { background: #1b5e20; color: white; }
+
+  /* ── THEME TOGGLE ── */
+  .btn-theme {
+    background: var(--white);
+    border: 2px solid var(--border);
+    color: var(--muted);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
+    padding: 10px 12px; cursor: pointer; transition: all 0.15s;
+    display: flex; align-items: center; gap: 6px; min-height: 40px; white-space: nowrap;
+  }
+  .btn-theme:hover { border-color: var(--sigma-blue); color: var(--sigma-blue); }
+  body.dark .btn-theme { background: var(--white); border-color: var(--border); color: var(--muted); }
+  .save-indicator { font-size: 11px; color: #1b5e20; font-weight: 600; letter-spacing: 0.04em; opacity: 0; transition: opacity 0.4s; }
+  .save-indicator.show { opacity: 1; }
+
+  /* ── TABS – horizontal scroll on mobile ── */
+  .tab-nav-wrap {
+    max-width: 980px; margin: 0 auto 16px;
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .tab-nav-wrap::-webkit-scrollbar { display: none; }
+  .tab-nav {
+    display: flex; gap: 4px; padding-bottom: 2px;
+    width: max-content; min-width: 100%;
+  }
+  .tab-btn {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
+    padding: 10px 14px; border: 2px solid var(--border);
+    background: var(--white); color: var(--muted); cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    white-space: nowrap; min-height: 40px; flex-shrink: 0;
+  }
+  .tab-btn:active { border-color: var(--sigma-light); color: var(--sigma-light); }
+  .tab-btn.active { background: var(--sigma-blue); border-color: var(--sigma-blue); color: white; }
+
+  /* ── SHEET ── */
+  .sheet { display: none; max-width: 980px; margin: 0 auto; }
+  .sheet.active { display: block; }
+
+  .sheet-header {
+    background: var(--sigma-blue); color: white;
+    padding: 14px 16px; display: flex;
+    justify-content: space-between; align-items: flex-end;
+  }
+  .sheet-header h2 { font-size: 17px; font-weight: 700; letter-spacing: -0.01em; }
+  .sheet-header .pos-code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 22px; font-weight: 500;
+    opacity: 0.3; letter-spacing: -0.02em; line-height: 1;
+  }
+
+  /* ── PROGRESS ── */
+  .progress-bar-wrap {
+    background: var(--accent); border: 1px solid var(--border); border-top: none;
+    padding: 6px 12px; display: flex; align-items: center; gap: 8px; margin-bottom: 4px;
+  }
+  .progress-label { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+  .progress-track { flex: 1; height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--sigma-blue); border-radius: 3px; width: 0%; transition: width 0.3s; }
+  .progress-pct { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--sigma-blue); font-weight: 500; white-space: nowrap; }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--sigma-blue); font-weight: 500;
+    background: var(--accent); border-left: 3px solid var(--sigma-blue); padding: 6px 12px;
+  }
+
+  /* ── BASIC DATA ── */
+  .basic-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    background: var(--white); border: 1px solid var(--border); border-top: none; margin-bottom: 4px;
+  }
+  .basic-item { padding: 10px 12px; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .basic-item:nth-child(2n) { border-right: none; }
+  .basic-item label { display: block; font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 5px; }
+  .basic-item input[type="text"] {
+    width: 100%; border: none; border-bottom: 1.5px solid var(--border);
+    background: transparent; font-family: 'IBM Plex Sans', sans-serif;
+    /* min 16px to prevent iOS zoom */
+    font-size: 16px; color: var(--text); padding: 4px 0; outline: none;
+  }
+  .basic-item input[type="text"]:focus { border-bottom-color: var(--sigma-blue); }
+  .basic-item input[type="text"]::placeholder { color: #b0bcce; font-size: 13px; }
+
+  /* ── Q GRID – always single column on mobile ── */
+  .q-grid { display: grid; grid-template-columns: 1fr; gap: 4px; margin-bottom: 4px; }
+  .q-block { background: var(--white); border: 1px solid var(--border); }
+  .q-block-header {
+    background: var(--section-bg); border-bottom: 1px solid var(--border);
+    padding: 9px 14px 9px 12px; font-size: 11px; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--sigma-blue);
+    border-left: 4px solid var(--sigma-blue);
+  }
+  .q-block-header[data-type="obrona"]       { border-left-color: #c62828; color: #c62828; }
+  .q-block-header[data-type="atak"]         { border-left-color: #2e7d32; color: #2e7d32; }
+  .q-block-header[data-type="przełączanie"] { border-left-color: #6a1b9a; color: #6a1b9a; }
+  .q-block-header[data-type="motoryka"]     { border-left-color: #0277bd; color: #0277bd; }
+  .q-block-header[data-type="charakter"]    { border-left-color: #4e342e; color: #4e342e; }
+
+  .q-list { list-style: none; padding: 0; }
+  .q-list li { border-bottom: 1px solid #edf1f7; }
+  .q-list li:last-child { border-bottom: none; }
+
+  .q-item-header {
+    display: flex; align-items: flex-start; gap: 10px;
+    /* tall touch target */
+    padding: 13px 14px 10px; cursor: pointer; user-select: none;
+    -webkit-user-select: none;
+  }
+  .q-item-header:active { background: var(--accent); }
+  body.dark .q-item-header:active { background: #162840; }
+
+  .q-dot {
+    width: 8px; height: 8px; border: 1.5px solid var(--sigma-light);
+    border-radius: 50%; flex-shrink: 0; margin-top: 5px; transition: background 0.15s;
+  }
+  .q-answered .q-dot { background: var(--sigma-blue); border-color: var(--sigma-blue); }
+
+  .q-text { flex: 1; }
+  .q-text strong { display: block; font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 2px; }
+  .q-text span { font-size: 13px; color: var(--text); line-height: 1.5; }
+
+  .q-toggle { font-size: 16px; color: var(--sigma-light); flex-shrink: 0; line-height: 1; margin-top: 3px; transition: transform 0.2s; }
+  .q-open .q-toggle { transform: rotate(180deg); }
+
+  .q-answer-wrap { display: none; padding: 2px 14px 12px 14px; }
+  .q-open .q-answer-wrap { display: block; }
+  .q-answer-wrap textarea {
+    width: 100%; min-height: 104px;
+    border: 1.5px solid var(--border); border-radius: 4px;
+    background: var(--answer-bg); font-family: 'IBM Plex Sans', sans-serif;
+    /* min 16px = no iOS zoom */
+    font-size: 16px; color: var(--text); padding: 10px 12px;
+    resize: vertical; outline: none; transition: border-color 0.15s; line-height: 1.55;
+  }
+  .q-answer-wrap textarea:focus { border-color: var(--sigma-blue); background: var(--answer-bg); }
+  .q-answer-wrap textarea { color: var(--text); }
+  .q-answer-wrap textarea::placeholder { color: #b0bcce; font-style: italic; font-size: 14px; }
+
+  .q-hint {
+    font-size: 11.5px;
+    line-height: 1.55;
+    color: #1a3a6b;
+    background: #eaf0fb;
+    border-left: 3px solid #5b8dee;
+    padding: 6px 10px;
+    margin-bottom: 7px;
+    border-radius: 0 2px 2px 0;
+  }
+  .q-hint-label {
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    font-size: 10px;
+    color: #3060c0;
+    margin-right: 4px;
+  }
+
+  /* ── FINAL SECTION ── */
+  .final-section { background: var(--white); border: 1px solid var(--border); margin-bottom: 4px; }
+  .final-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    border-bottom: 1px solid var(--border);
+  }
+  .final-item { padding: 12px 14px; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .final-item:nth-child(2n) { border-right: none; }
+  .final-item:nth-last-child(-n+2) { border-bottom: none; }
+  .final-item label { display: block; font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .final-item select {
+    width: 100%; border: none; border-bottom: 1.5px solid var(--border);
+    background: transparent; font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 16px; font-weight: 600; color: var(--sigma-blue);
+    padding: 4px 0; outline: none; cursor: pointer;
+    -webkit-appearance: none; appearance: none;
+  }
+  .final-item input[type="text"] {
+    width: 100%; border: none; border-bottom: 1.5px solid var(--border);
+    background: transparent; font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 16px; color: var(--text); padding: 4px 0; outline: none;
+  }
+  .final-item input:focus, .final-item select:focus { border-bottom-color: var(--sigma-blue); }
+  .uwagi-wrap { padding: 12px 14px; }
+  .uwagi-wrap label { display: block; font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .uwagi-wrap textarea {
+    width: 100%; min-height: 90px; border: 1.5px solid var(--border); border-radius: 4px;
+    background: var(--answer-bg); font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 16px; color: var(--text); padding: 10px 12px; resize: vertical; outline: none;
+    transition: border-color 0.15s; line-height: 1.55;
+  }
+  .uwagi-wrap textarea:focus { border-color: var(--sigma-blue); background: var(--answer-bg); }
+
+  /* ── NOTE ── */
+  .sheet-note {
+    background: var(--tag-bg); border: 1px solid var(--border);
+    border-left: 3px solid var(--sigma-blue); padding: 10px 14px;
+    font-size: 12px; color: var(--sigma-blue); line-height: 1.6; margin-top: 4px; margin-bottom: 24px;
+  }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,20,60,0.6); z-index: 1000;
+    align-items: flex-end; justify-content: center;
+    padding: 0;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal {
+    background: white; width: 100%; max-width: 720px;
+    max-height: 90vh; display: flex; flex-direction: column;
+    border-top: 4px solid var(--sigma-blue);
+    border-radius: 0;
+  }
+  .modal-header { padding: 16px 18px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+  .modal-header h3 { font-size: 14px; font-weight: 700; color: var(--sigma-blue); }
+  .modal-close { background: none; border: none; font-size: 24px; cursor: pointer; color: var(--muted); line-height: 1; padding: 4px 6px; min-width: 44px; min-height: 44px; display: flex; align-items: center; justify-content: center; }
+  .modal-body { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 14px 18px; }
+  .modal-body pre { font-family: 'IBM Plex Mono', monospace; font-size: 12px; white-space: pre-wrap; word-break: break-word; color: var(--text); line-height: 1.7; }
+  .modal-footer { padding: 12px 18px; border-top: 1px solid var(--border); display: flex; gap: 8px; justify-content: flex-end; padding-bottom: max(12px, env(safe-area-inset-bottom)); }
+
+  /* ── DESKTOP enhancements ── */
+  /* ── OBS NOTES PANEL (in form) ── */
+  .obs-notes-panel { margin-bottom: 4px; }
+  .obs-notes-panel:empty { display: none; }
+
+  .obs-notes-card {
+    border: 1.5px solid var(--border);
+    border-left: 3px solid #2ecc71;
+    background: var(--white);
+    transition: box-shadow 0.2s;
+  }
+  .obs-notes-card.open {
+    position: fixed;
+    top: 0;
+    z-index: 100;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(980px, 100vw);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.22);
+  }
+  /* placeholder to reserve space when card is fixed */
+  .obs-notes-placeholder {
+    display: none;
+  }
+  .obs-notes-card.open ~ .obs-notes-placeholder {
+    display: block;
+  }
+  .obs-notes-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 14px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .obs-notes-card-header:hover { background: var(--accent); }
+  .obs-notes-badge {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px; font-weight: 700; letter-spacing: 0.14em;
+    text-transform: uppercase; color: white;
+    background: #2ecc71; padding: 2px 7px;
+    flex-shrink: 0;
+  }
+  body.dark .obs-notes-badge { background: #1a7a40; color: #a0f0c0; }
+  .obs-notes-card-title {
+    flex: 1;
+    font-size: 12px; font-weight: 600; color: var(--text);
+  }
+  .obs-notes-card-title span {
+    font-weight: 400; color: var(--muted); font-size: 11px; margin-left: 6px;
+  }
+  .obs-notes-card-toggle {
+    font-size: 14px; color: var(--muted); transition: transform 0.2s;
+  }
+  .obs-notes-card.open .obs-notes-card-toggle { transform: rotate(180deg); }
+  .obs-notes-card-body {
+    display: none;
+    padding: 0 14px 12px;
+    border-top: 1px solid var(--border);
+    max-height: 38vh;
+    overflow-y: auto;
+  }
+  .obs-notes-card.open .obs-notes-card-body { display: block; }
+  .obs-notes-text {
+    font-size: 12.5px;
+    color: var(--text);
+    line-height: 1.65;
+    white-space: pre-wrap;
+    padding-top: 10px;
+  }
+  body.dark .obs-notes-text { color: #a0b8d0; }
+
+  @media (min-width: 700px) {
+  body.dark .q-hint { background: #0a1e38; border-left-color: #3a6aaa; color: #8ab0e0; }
+  body.dark .q-hint-label { color: #5b8dee; }
+  body.dark .basic-item input[type="text"] { color: var(--text); }
+  body.dark .final-item input[type="text"],
+  body.dark .final-item select { color: var(--text); background: transparent; }
+  body.dark .generate-wrap { background: linear-gradient(135deg, #0c1a2e 0%, #0a1828 100%); }
+  body.dark .generate-hint { color: var(--muted); }
+  body.dark .sheet-note { background: #0a1828; color: #5b8dee; }
+  body.dark .page-title h1 { color: var(--sigma-blue); }
+  body.dark .section-label { color: var(--sigma-blue); }
+  body.dark .q-block-header[data-type="obrona"]       { color: #e55353; border-left-color: #e55353; }
+  body.dark .q-block-header[data-type="atak"]         { color: #2ecc71; border-left-color: #2ecc71; }
+  body.dark .q-block-header[data-type="przełączanie"] { color: #bb86fc; border-left-color: #bb86fc; }
+  body.dark .q-block-header[data-type="motoryka"]     { color: #56ccf2; border-left-color: #56ccf2; }
+  body.dark .q-block-header[data-type="charakter"]    { color: #f9a825; border-left-color: #f9a825; }
+  body.dark .report-section-label[data-type="obrona"]       { background: rgba(229,83,83,0.08); }
+  body.dark .report-section-label[data-type="przełączanie"] { background: rgba(187,134,252,0.08); }
+  body.dark .report-section-label[data-type="motoryka"]     { background: rgba(86,204,242,0.08); }
+  body.dark .modal, body.dark .report-modal { background: #0f1f35; }
+  body.dark .modal-header, body.dark .report-modal-header { background: #0c1828; border-color: #1e3050; }
+  body.dark .modal-footer, body.dark .report-modal-footer { border-color: #1e3050; }
+  body.dark .report-lang-tabs { background: #0c1828; border-color: #1e3050; }
+  body.dark .modal-body pre { color: var(--text); }
+  body.dark .progress-bar-wrap { background: #0a1828; }
+  body.dark .progress-fill { background: #5b8dee; }
+  body.dark .progress-pct { color: #5b8dee; }
+
+  @media (min-width: 700px) {
+    body.dark .btn-observe:hover { background: #1b5e20; color: white; }
+    body.dark .btn-theme:hover { border-color: var(--sigma-blue); color: var(--sigma-blue); }
+  }
+    .page-header { margin-bottom: 32px; padding-bottom: 18px; }
+    .header-top { flex-wrap: nowrap; }
+    .page-title h1 { font-size: 20px; }
+    .logo-badge { font-size: 10px; }
+    .basic-grid { grid-template-columns: repeat(3, 1fr); }
+    .basic-item:nth-child(2n) { border-right: 1px solid var(--border); }
+    .basic-item:nth-child(3n) { border-right: none; }
+    .basic-item input[type="text"] { font-size: 13px; }
+    .basic-item input[type="text"]::placeholder { font-size: 13px; }
+    .q-grid-2col { grid-template-columns: 1fr 1fr; }
+    .q-item-header { padding: 9px 14px 6px; }
+    .q-text span { font-size: 12.5px; }
+    .q-answer-wrap { padding: 2px 14px 10px 29px; }
+    .q-answer-wrap textarea { font-size: 12.5px; min-height: 78px; }
+    .q-answer-wrap textarea::placeholder { font-size: 12.5px; }
+    .final-grid { grid-template-columns: 2fr 1fr 1fr 1fr; }
+    .final-item { border-bottom: none; }
+    .final-item:nth-child(2n) { border-right: 1px solid var(--border); }
+    .final-item:last-child { border-right: none; }
+    .final-item select, .final-item input[type="text"] { font-size: 14px; }
+    .uwagi-wrap textarea { font-size: 13px; }
+    .modal-overlay { align-items: center; padding: 20px; }
+    .modal { border-radius: 0; max-height: 85vh; }
+    .btn:hover { opacity: 0.88; }
+    .btn-export:hover { background: var(--sigma-light); border-color: var(--sigma-light); }
+    .btn-clear:hover { background: #c9313a; color: white; }
+    .q-item-header:hover { background: var(--accent); }
+    body.dark .q-item-header:hover { background: #162840; }
+    .tab-nav { width: auto; }
+    .tab-nav-wrap { overflow-x: visible; }
+    .tab-btn { padding: 7px 13px; min-height: auto; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="header-top">
+    <div class="logo-badge">SK Sigma<br>Ołomuniec</div>
+    <div class="page-title">
+      <h1>Arkusze obserwacyjne</h1>
+      <p>Dotknij pytanie · notatki zapisywane automatycznie</p>
+    </div>
+  </div>
+  <div class="header-actions">
+    <span class="save-indicator" id="saveInd">✓ Zapisano</span>
+    <button class="btn-theme" id="themeBtn" onclick="toggleTheme()" title="Przełącz tryb jasny/ciemny">
+      <span id="themeIcon">🌙</span>
+      <span id="themeLabel">Ciemny</span>
+    </button>
+    <button class="btn btn-observe" onclick="enterObserveMode()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"/></svg>
+      Tryb obserwacji
+    </button>
+    <button class="btn btn-clear" onclick="clearSheet()">Wyczyść</button>
+  </div>
+</div>
+
+<div class="tab-nav-wrap">
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="show('gk',this)">Bramkarz</button>
+    <button class="tab-btn" onclick="show('cb',this)">Śr. obrońca</button>
+    <button class="tab-btn" onclick="show('lb',this)">Boczny obrońca</button>
+    <button class="tab-btn" onclick="show('cm',this)">Śr. pomocnik</button>
+    <button class="tab-btn" onclick="show('cam',this)">Of. pomocnik</button>
+    <button class="tab-btn" onclick="show('winger',this)">Skrzydłowy</button>
+    <button class="tab-btn" onclick="show('cf',this)">Napastnik</button>
+  </div>
+</div>
+
+<!-- helper macro -->
+<script>
+function qItem(key, title, question) {
+  return `<li class="q-item">
+    <div class="q-item-header" onclick="toggleQ(this)">
+      <div class="q-dot"></div>
+      <div class="q-text">${title ? '<strong>'+title+'</strong>' : ''}<span>${question}</span></div>
+      <div class="q-toggle">▾</div>
+    </div>
+    <div class="q-answer-wrap"><textarea data-key="${key}" placeholder="Twoje notatki..."></textarea></div>
+  </li>`;
+}
+function basicItem(key, label, ph) {
+  return `<div class="basic-item"><label>${label}</label><input type="text" data-key="${key}" placeholder="${ph}"></div>`;
+}
+function basicGrid(pos, items) {
+  return `<div class="basic-grid">${items.map(i => basicItem(pos+'_'+i[0], i[1], i[2])).join('')}</div>`;
+}
+function finalBlock(pos) {
+  return `<div class="final-section">
+    <div class="section-label">Ocena końcowa</div>
+    <div class="final-grid">
+      <div class="final-item"><label>Imię skauta</label><input type="text" data-key="${pos}_scout" placeholder="Twoje imię i nazwisko"></div>
+      <div class="final-item"><label>Zalecenie</label><select data-key="${pos}_rec"><option value="">—</option><option>TAK</option><option>NIE</option><option>Obserwować</option></select></div>
+      <div class="final-item"><label>Ocena (A–D)</label><select data-key="${pos}_grade"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option></select></div>
+      <div class="final-item"><label>Potencjał (A–D)</label><select data-key="${pos}_pot"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option></select></div>
+    </div>
+    <div class="uwagi-wrap"><label>Ocena końcowa – uwagi ogólne</label><textarea data-key="${pos}_summary" placeholder="Ogólne podsumowanie obserwacji, wrażenia z meczu, kontekst sytuacyjny..."></textarea></div>
+    <div class="generate-wrap">
+      <button class="btn-generate" onclick="generateReport('${pos}')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        Generuj raport
+      </button>
+      <span class="generate-hint">Przygotowuje dane do wygenerowania raportu</span>
+    </div>
+  </div>`;
+}
+function progressBar(pos) {
+  return `<div class="progress-bar-wrap">
+    <span class="progress-label">Wypełnienie</span>
+    <div class="progress-track"><div class="progress-fill" id="${pos}-prog"></div></div>
+    <span class="progress-pct" id="${pos}-pct">0%</span>
+  </div>`;
+}
+const BASIC_COMMON = [
+  ['name','Imię i nazwisko','Jan Kowalski'],
+  ['dob','Data urodzenia','dd.mm.rrrr'],
+  ['height','Wzrost','np. 183 cm'],
+  ['nat','Narodowość','np. Polska'],
+  ['club','Klub','np. FC Przykład'],
+  ['foot','Stopa dominująca','Lewa / Prawa / Obie'],
+  ['agent','Agent','nazwisko lub brak'],
+  ['tm','Link Transfermarkt','transfermarkt.pl/...'],
+  ['match','Mecz, data, wideo/na żywo','np. Sigma vs Sparta, 18.03.2026, wideo']
+];
+</script>
+
+<!-- ======================== GK ======================== -->
+<div id="gk" class="sheet active"></div>
+<!-- ======================== CB ======================== -->
+<div id="cb" class="sheet"></div>
+<!-- ======================== LB ======================== -->
+<div id="lb" class="sheet"></div>
+<!-- ======================== CM ======================== -->
+<div id="cm" class="sheet"></div>
+<!-- ======================== CAM ======================== -->
+<div id="cam" class="sheet"></div>
+<!-- ======================== WINGER ======================== -->
+<div id="winger" class="sheet"></div>
+<!-- ======================== CF ======================== -->
+<div id="cf" class="sheet"></div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="exportModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Eksport notatek – gotowe do skopiowania</h3>
+      <button class="modal-close" onclick="closeExport()">✕</button>
+    </div>
+    <div class="modal-body"><pre id="exportText"></pre></div>
+    <div class="modal-footer">
+      <button class="btn btn-export" onclick="copyExport()">Kopiuj do schowka</button>
+      <button class="btn" style="border-color:var(--border);color:var(--muted)" onclick="closeExport()">Zamknij</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── BUILD SHEETS ──
+(function(){
+  const sheets = {
+    gk: {
+      title: 'Bramkarz', code: 'GK',
+      basic: BASIC_COMMON.map(i => i[0]==='height' ? ['height','Wzrost (wymaganie 188+ cm)','np. 191 cm'] : i),
+      blocks: [
+        { type:'technika', header: 'Technika i taktyka', items: [
+          ['t1','Technika łapania','Jak pewny jest przy łapaniu piłek? Czy eliminuje odbicia? Czy trzyma pewnie przy wbiegających napastnikach?','Pewność przy interwencjach, prawidłowe trzymanie piłki, eliminacja odbić i błędów prowadzących do dobitki.'],
+          ['t2','Gra nogami – podania krótkie','Jak precyzyjne są podania na krótki dystans do obrońców pod presją? Czy aktywnie uczestniczy w budowaniu gry?','Aktywne włączanie się do rozgrywki, precyzyjne podania na krótki dystans, umiejętność gry pod presją.'],
+          ['t3','Gra nogami – podania długie','Czy potrafi precyzyjnie rozegrać na długi dystans? Jak wybierał rozwiązanie – wrzutka, wybicie, rozgrywka?','Częste angażowanie się w budowanie gry, świadomy wybór rozwiązania przy każdej sytuacji.'],
+          ['t4','Ustawianie i pozycjonowanie','Jak ustawia się przy strzałach – czy prawidłowo skraca kąt? Jak wychodzi przy dośrodkowaniach?','Prawidłowe wyczucie czasu przy wychodzeniu, szybkie czytanie sytuacji w polu karnym.'],
+          ['t5','Zdolności decyzyjne','Czy prawidłowo wyczuwa moment wyjścia z bramki? Jak szybko reaguje na sytuacje w polu karnym – zostaje czy wychodzi?','Wybór optymalnej interwencji w kluczowych momentach, właściwa decyzja wyjść/zostać.'],
+          ['t6','Ustawianie przy SFG','Czy aktywnie organizuje mur? Jak ustawia się przy rzutach rożnych i wolnych rywala?','Aktywne kierowanie linią defensywną, wyznaczanie ustawienia przy stałych fragmentach rywala.'],
+        ]},
+        { type:'obrona', header: 'Obrona i atak', items: [
+          ['o1','Interwencje','Jakich interwencji dokonał – reflex, stop nisko, wysoko, strzał z dystansu? Czy miał problemy z odbiciami?','Różnorodność interwencji, pewność przy każdym typie strzału, eliminacja dobitki po odbiciu.'],
+          ['o2','Pojedynki powietrzne','Czy dominuje w małym polu karnym przy dośrodkowaniach i rzutach rożnych? Czy przebija się przez napastników?','Dominacja w małym polu karnym, pewność przy dośrodkowaniach i SFG, umiejętność przebicia się przez napastników.'],
+          ['o3','Pewność przy wyjściach','Czy zdecydowanie wychodzi na dośrodkowania? Czy wyłapuje piłkę w tłoku, czy raczej ją pięściuje?','Silna i odważna gra w powietrzu – łapanie zamiast pięściowania tam gdzie to możliwe.'],
+          ['o4','Siła w starciach 1v1','Jak zachowuje się przy wybiegnięciach napastnika sam na sam? Czy jest odważny, wybiega zdecydowanie?','Siła i odwaga w pojedynkach, zdecydowane wybieganie sam na sam, brak wahań.'],
+          ['o5','Organizacja linii defensywnej','Czy aktywnie kieruje linią defensywną? Czy słyszalna jest komunikacja z obrońcami?','Aktywna komunikacja z obroną, kierowanie ustawieniem przez cały mecz.'],
+          ['a1','Udział w ataku pozycyjnym','Jak aktywnie uczestniczy w rozgrywce przy ataku pozycyjnym? Czy szuka podań i inicjuje akcje?','Aktywne włączanie się do rozgrywki od tyłu, umiejętność gry pod presją przy budowaniu ataku.'],
+        ]},
+        { type:'przełączanie', header: 'Przełączanie i naciskanie', items: [
+          ['p1','Przełączanie obrona - atak','Jak szybko wznawia grę po złapaniu/wybiciu piłki? Czy stara się szybko uruchomić kontratak?','Szybkie wznowienie gry po interwencji, inicjowanie kontrataku bez zwłoki.'],
+          ['p2','Reakcja po błędzie','Jak reaguje po błędzie własnym lub utraconej bramce – potrafi skupić się dalej na grze?','Odporność psychiczna, zdolność utrzymania koncentracji i pewności siebie po błędzie lub straconej bramce.'],
+          ['p3','Pressing przy wyjściu rywala','Czy aktywnie wychodzi do pressingu gdy rywal buduje od tyłu? Jak szybko podejmuje decyzję o wyjściu?','Aktywne wychodzenie do rozgrywki rywala od tyłu, zmuszanie do błędów przy budowaniu.'],
+        ]},
+        { type:'motoryka', header: 'Umiejętności motoryczne i charakter', items: [
+          ['m1','Dynamika i eksplozywność','Jak szybko reaguje przy interwencjach bliskiego zasięgu? Czy widać eksplozywność przy skokach i przesunięciach bocznych?','Wymaganie: wzrost 188+ cm. Szybka reakcja na małej przestrzeni, wybuchowość przy skokach i przesunięciach.'],
+          ['m2','Siła fizyczna','Jak radzi sobie w pojedynkach fizycznych z napastnikami w polu karnym? Czy trzyma pozycję?','Odpowiednie predyspozycje fizyczne do pokrycia przestrzeni bramki, siła przy starciach z napastnikami.'],
+          ['m3','Odporność psychiczna','Czy utrzymuje koncentrację przez cały mecz? Jak reaguje po trudnej sytuacji lub straconej bramce?','Zdolność utrzymania koncentracji przez cały mecz, odporność na presję, pewność siebie w kluczowych momentach.'],
+          ['m4','Komunikacja i przywództwo','Czy słyszalnie kieruje obroną? Czy jest liderem w komunikacji z partnerami przez cały mecz?','Aktywne kierowanie linią defensywną, komunikacja z obroną, wyznaczanie ustawienia przy SFG.'],
+          ['m5','Pewność siebie','Czy widać pewność przy każdej interwencji, czy raczej zdarzają się wahania i nerwy?','Pewność siebie, brak wahań, szybka reakcja po straconej bramce lub błędzie.'],
+        ]},
+      ],
+      note: 'Wymagania kondycyjne: wzrost 188+ cm, wysoka dynamika. Sigma gra w wysokim pressingu – aktywna gra nogami bramkarza jest absolutnie kluczowa.'
+    },
+    cb: {
+      title: 'Środkowy obrońca', code: 'CB',
+      basic: BASIC_COMMON,
+      blocks: [
+        { type:'technika', header: 'Technika i taktyka', items: [
+          ['t1','Technika podania – krótkie','Jak precyzyjne są krótkie podania do partnerów pod presją? Czy nie traci piłki przy wychodzeniu z pressingiem?','Konstruktywna rozgrywka: precyzyjna i szybka dystrybucja od linii obrony, prawidłowy wybór rozwiązania przy budowaniu ataku.'],
+          ['t2','Technika podania – długie / przerzuty','Czy potrafi zmienić punkt gry precyzyjnym przerzutem? Jak oceniasz celność i siłę podań długich?','Zdolność otwierania gry długim podaniem, zmiana rytmu, precyzyjne diagonale pod presją.'],
+          ['t3','Pierwsze przyjęcie','Jak wygląda przyjęcie piłki pod presją – bezpieczne z zabezpieczeniem, czy ryzykowne?','Odporność na pressing rywala, zdolność znalezienia rozwiązania bez niepotrzebnych strat piłki.'],
+          ['t4','Gra pozycyjna – ustawienie linii','Jak ustawia się przy zmianach gry rywala? Czy prawidłowo zajmuje pozycję w obronie strefowej?','Utrzymywanie kompaktowej linii obronnej, prawidłowe wychodzenie i krycie przestrzeni przy przesuwaniu gry rywala.'],
+          ['t5','Taktyczne zachowanie przy SFG','Jak zachowuje się przy SFG rywala – krycie strefowe czy indywidualne? Jak ustawia się przy wolnych i rożnych?','Krycie w grze 1:1 i gra pozycyjna przy stałych fragmentach rywala.'],
+          ['t6','SFG ofensywne – zagrożenie','Czy stanowi zagrożenie przy rzutach rożnych i wolnych własnej drużyny? Jak wbiega i gra głową?','Silny w ofensywnych stałych fragmentach gry: dobre wyczucie czasu wbiegania i gra głową.'],
+        ]},
+        { type:'obrona', header: 'Obrona i atak', items: [
+          ['o1','Krycie w grze 1v1','Czy skutecznie zatrzymuje napastnika w bezpośrednim starciu? Jak wyczuwa moment ślizgu lub wyparcia?','Zdolność eliminowania rywala w bezpośrednim starciu, intensywność w pojedynkach i agresywność.'],
+          ['o2','Czytanie gry – przechwycenia','Czy antycypuje podania i ruchy napastnika? Ile razy zdołał przechwycić piłkę zanim sytuacja stała się groźna?','Antycypacja podań i ruchów rywala, wczesne przechwytywanie podań w głąb, zdolność przerwania akcji.'],
+          ['o3','Pojedynki powietrzne','Jak wygrywał pojedynki w powietrzu – w ataku i obronie? Dominuje czy ma z tym problem?','Kluczowa umiejętność przy SFG, dośrodkowaniach i odwracaniu długich wybić – wymagana dominacja.'],
+          ['o4','Agresywność w starciach','Czy nie boi się kontaktu fizycznego, wślizgów, pojedynków ciałem? Ile wygrał/przegrał pojedynków?','Intensywność w pojedynkach, nieustraszenie przy starciach ciałem i ślizgach.'],
+          ['o5','Szybkość – piłki za plecy','Jak reaguje na wbiegania za linię obrony? Czy dogania rywala, czy spóźnia się?','Szybkość ważna do przechwytywania wbiegań za wysuniętą linię obronną.'],
+          ['a1','Wyjście z piłką do przodu','Czy potrafi wyjść z piłką z obrony i przeprowadzić ją do środkowego pola? Jak często to robi?','Konstruktywna rozgrywka: zdolność do precyzyjnej gry od linii obrony i wspierania budowania ataku.'],
+          ['a2','Dołączanie do akcji ofensywnych','Czy angażuje się w atak – wyjście na skraj, udział w kombinacjach blisko pola karnego rywala?','Zagrożenie przy atakujących SFG, zdolności przywódcze w kluczowych momentach meczu.'],
+        ]},
+        { type:'przełączanie', header: 'Przełączanie i naciskanie', items: [
+          ['p1','Reakcja na stratę – pressing','Jak szybko reaguje po stracie piłki – od razu dochodzi do rywala, czy cofa się pasywnie?','Aktywna reakcja na stratę piłki, natychmiastowe dochodzenie do rywala.'],
+          ['p2','Udział w pressing drużynowy','Czy aktywnie uczestniczy w pressingowej akcji całego zespołu przy utracie posiadania?','Koordynacja z całą linią defensywną przy pressingowej akcji drużyny.'],
+          ['p3','Przełączanie atak - obrona','Jak szybko koryguje własne ustawienie po zmianie kierunku gry rywala lub utracie piłki przez kolegę?','Szybka korekta ustawienia po zmianie kierunku gry, pokrywanie większej przestrzeni przy wysuniętej linii.'],
+        ]},
+        { type:'motoryka', header: 'Umiejętności motoryczne i charakter', items: [
+          ['m1','Szybkość w sprintach obronnych','Jak oceniasz jego prędkość w sprintach obronnych? Czy widać problem z szybkimi napastnikami?','Wymaganie: maks. prędkość 32,5+ km/h. Szybkość kluczowa przy wysuniętej linii obronnej.'],
+          ['m2','Budowa fizyczna','Wzrost, masa ciała – czy predyspozycje fizyczne są odpowiednie do pozycji w systemie Sigmy?','Wzrost, siła i odporność na presję rywala, powtarzalne obciążenia przez cały mecz.'],
+          ['m3','Wytrzymałość','Czy utrzymuje intensywność przez całe 90 minut? Czy widać spadek koncentracji lub tempa w końcówce?','Koncentracja, pewność i dyscyplina przez całe 90 minut – minimalna błędność.'],
+          ['m4','Komunikacja i organizacja','Czy głośno kieruje obroną? Czy widać, że organizuje ustawienie przy SFG rywala?','Kierowanie współpartnerami w fazie defensywnej, wczesne ostrzeganie o wbieganiach.'],
+          ['m5','Koncentracja i odporność na błąd','Ile błędów popełnił i jak reagował po błędzie? Czy zachowuje spokój pod presją?','Skrupulatne wykonywanie zadań obronnych, zdolność zachowania spokoju pod presją.'],
+          ['m6','Zdolności przywódcze','Czy bierze odpowiedzialność w kluczowych momentach? Czy drużyna reaguje na jego komunikaty?','Naturalna władza, zdolność prowadzenia drużyny przykładem, przyjmowanie odpowiedzialności w kluczowych momentach.'],
+        ]},
+      ],
+      note: 'Wymagania kondycyjne: dystans 10 000 m, maks. prędkość 32,5+ km/h, player load 1000. Sigma gra z wysoko osadzoną linią – szybkość CB jest absolutnym priorytetem.'
+    },
+    lb: {
+      title: 'Boczny obrońca', code: 'LB / RB',
+      basic: BASIC_COMMON.map(i => i[0]==='foot' ? ['foot','Stopa dominująca (LB=lewa / RB=prawa)','Lewa / Prawa / Obie'] : i),
+      blocks: [
+        { type:'technika', header: 'Technika i taktyka', items: [
+          ['t1','Technika dośrodkowania','Ile dośrodkowań wykonał i z jakich pozycji? Jak oceniasz jakość – w przestrzeń, na głowę, po ziemi?','Zdolność minięcia rywala i następnie precyzyjne dośrodkowanie – zarówno po ziemi do niebezpiecznych stref, jak i w powietrzu.'],
+          ['t2','Technika podania','Jak precyzyjne są podania krótkie do skrzydłowego i środkowego pomocnika? Czy pewnie rozgrywa pod presją?','Preferowana noga: przewaga przy dośrodkowaniu z pierwszej piłki i przy budowaniu gry wzdłuż linii bocznej.'],
+          ['t3','Drybling i wejście w 1v1','Czy próbuje minąć rywala 1v1 na skrzydle? Jak skuteczny jest w tych sytuacjach?','Drybling: zdolność minięcia rywala w przestrzeni skrzydłowej jako punkt wyjścia do dośrodkowania.'],
+          ['t4','Gra pozycyjna w obronie','Czy prawidłowo wychodzi lub pozostaje na pozycji? Czy kryje przestrzeń przy przesuwaniu gry rywala?','Taktyczne zachowanie: utrzymywanie kompaktowości linii, krycie przestrzeni, wsparcie stopera przy przesuwaniu gry.'],
+          ['t5','Wsparcie ofensywne (overlap/underlap)','Czy robi overlap (obieganie skrzydłowego) lub underlap (wbieganie do środka)? Jak często angażuje się ofensywnie?','Aktywne włączanie w fazę ataku: overlap lub underlap, oferowanie się przy rozgrywce.'],
+          ['t6','Współpraca ze skrzydłowym','Jak buduje kombinacje ze skrzydłowym własnej drużyny? Czy wyczucie czasu wbiegań jest prawidłowe?','Tworzenie kombinacji ze skrzydłowym i środkowym pomocnikiem, szybka zmiana ról (atak/obrona).'],
+        ]},
+        { type:'obrona', header: 'Obrona i atak', items: [
+          ['o1','Krycie 1v1 skrzydłowego','Jak radzi sobie z dynamicznym skrzydłowym rywala? Czy daje się zwodzić, czy utrzymuje właściwy dystans?','Zdolność zatrzymania rywala w indywidualnym starciu, utrzymanie właściwego dystansu, wyczucie czasu przy ślizgu.'],
+          ['o2','Czytanie gry – przechwycenia','Czy antycypuje podania i ruchy skrzydłowego rywala? Ile razy przechwycił lub wybił piłkę wcześniej?','Antycypacja podań rywala, ruchów napastników, wczesne reagowanie na zmiany tempa lub kierunku.'],
+          ['o3','Pojedynki fizyczne','Czy nie boi się kontaktu, czy też unika bezpośrednich pojedynków ciałem?','Siła w pojedynkach: zdolność do wytrzymania fizycznie wymagających sytuacji, nie boi się kontaktu.'],
+          ['o4','Komunikacja defensywna','Czy komunikuje się z partnerami – zabezpieczanie, przejęcia, ustawienie przy SFG?','Ciągłe przekazywanie informacji współpartnerom – zabezpieczanie, przejmowanie zawodników, ustawienie.'],
+          ['o5','Powroty do obrony','Jak szybko wraca po wyjściu do ataku? Czy zostawia przestrzeń za sobą?','Szybkość i wytrzymałość: niezbędne do długich biegów po bocznej linii w obu kierunkach przez 90 minut.'],
+          ['a1','Tworzenie przewagi na skrzydle','Jak często i skutecznie tworzy przewagę 2v1 lub 3v2 na swoim skrzydle razem ze skrzydłowym?','Współpraca w przestrzeni skrzydłowej, tworzenie kombinacji, właściwe wyczucie czasu wbiegań.'],
+          ['a2','Zagrożenie w polu karnym','Czy wbiega do pola karnego na drugiej fali? Czy stwarza zagrożenie strzałem lub uderzeniem głową?','Aktywne włączanie się w fazę ataku, oferta w drugiej fali, zagrożenie przy dośrodkowaniach.'],
+        ]},
+        { type:'przełączanie', header: 'Przełączanie i naciskanie', items: [
+          ['p1','Powrót po utracie piłki wysoko','Jak szybko wraca do bloku obronnego po utracie piłki w wysokiej pozycji?','Natychmiastowa reakcja przy stracie w wysokiej pozycji – szybki powrót do bloku obronnego.'],
+          ['p2','Pressing bocznego obrońcy rywala','Czy aktywnie dochodzi do skrzydłowego lub bocznego obrońcy rywala przy pressingowej akcji drużyny?','Aktywne dochodzenie do bocznych obrońców rywala, ograniczanie ich rozgrywki.'],
+          ['p3','Przełączanie obrona - atak','Jak szybko przełącza się z fazy obronnej do ofensywnej przy odbiorze piłki przez drużynę?','Szybkość przełączenia: natychmiastowa reakcja przy zdobyciu piłki – wypad do ataku lub oferowanie się.'],
+        ]},
+        { type:'motoryka', header: 'Umiejętności motoryczne i charakter', items: [
+          ['m1','Szybkość wzdłuż linii bocznej','Jak oceniasz jego prędkość w sprintach wzdłuż linii bocznej – zarówno do przodu jak i do tyłu?','Wymaganie: maks. prędkość 33+ km/h, HIR 800 m, 250 akceleracji. Szybkość eliminuje rywala w pojedynkach 1:1.'],
+          ['m2','Dynamika i eksplozywność','Jak eksplozywny jest przy akceleracji i zmianie kierunku na małej przestrzeni?','Dynamika kluczowa przy akceleracji, zmianie kierunku, eksplozywnym starcie do ataku i obrony.'],
+          ['m3','Wytrzymałość','Czy utrzymuje intensywność działań przez całe 90 minut? Czy widać wyraźne zmęczenie w 2. połowie?','Wytrzymałość: niezbędna dla wielokrotnego angażowania się w ofensywę i defensywę przez całe 90 minut.'],
+          ['m4','Determinacja i charakter','Jak reaguje po błędzie lub po tym, jak skrzydłowy go mija? Wraca z determinacją czy spada z gry?','Stanowcze rozwiązywanie sytuacji defensywnych, nie boi się kontaktu, determinacja po błędzie.'],
+        ]},
+      ],
+      note: 'Wymagania kondycyjne: dystans 11 500 m, HIR 800 m, liczba akceleracji 250, maks. prędkość 33+ km/h, player load 1200. Jeden z najbardziej wymagających kondycyjnie profili w systemie Sigmy.'
+    },
+    cm: {
+      title: 'Środkowy pomocnik (szóstka / ósemka)', code: 'CM',
+      basic: BASIC_COMMON,
+      blocks: [
+        { type:'technika', header: 'Technika i taktyka', items: [
+          ['t1','Technika podania – krótkie','Jak precyzyjne są krótkie podania na małej przestrzeni pod presją? Czy podnosi tempo gry czy ją spowalnia?','Kreatywność i przegląd gry: precyzyjna rozgrywka pod presją, utrzymanie wysokiego poziomu pewności technicznej.'],
+          ['t2','Technika podania – długie / przerzuty','Czy potrafi zmienić punkt gry precyzyjnym przerzutem? Ile razy próbował i z jaką skutecznością?','Technika kopania: precyzyjna dystrybucja piłek, zmiana rytmu gry, zdolność rozgrywania diagonali.'],
+          ['t3','Podania do 3. tercji / prostopadłe','Ile razy zagrał piłkę prostopadłą między linie lub za linię obrony? Z jaką skutecznością?','Precyzyjne podania w finalną tercję, kombinowanie na małej przestrzeni, podania rozbijające pressing.'],
+          ['t4','Pierwsze przyjęcie pod presją','Jak wygląda pierwsze przyjęcie? Czy utrzymuje piłkę gdy rywal go atakuje, czy traci?','Praca z piłką: precyzyjne prowadzenie, pierwsze dotknięcie, zdolność utrzymania piłki nawet przeciwko wielu rywalom.'],
+          ['t5','Gra pozycyjna – zabezpieczenie przestrzeni','Czy prawidłowo zabezpiecza przestrzeń przed linią obronną? Czy zamyka środek przy organizacji obronnej?','Gra pozycyjna i praca z przestrzenią: dobre zabezpieczanie przestrzeni przed linią obronną, krycie niebezpiecznych stref.'],
+          ['t6','SFG – wykonanie','Czy wykonuje rzuty rożne lub wolne? Jak oceniasz precyzję i pomysł na wykonanie?','Wykonywanie ofensywnych SFG: precyzyjne rzuty rożne, wolne i dośrodkowania do niebezpiecznych stref.'],
+        ]},
+        { type:'obrona', header: 'Obrona i atak', items: [
+          ['o1','Czytanie gry – przechwycenia','Ile razy przechwycił podanie rywala lub odciął linię podania? Czy antycypuje ruchy rywala?','Czytanie gry i przewidywalność: wczesne przechwytywanie rozgrywki rywala, antycypacja podań i ruchów zawodników.'],
+          ['o2','Szybkość dochodzenia do rywala','Jak szybko atakuje rywala przy odzysku? Czy jest aktywny natychmiast po stracie piłki?','Odbieranie piłek i szybkość dochodzenia: aktywne atakowanie rywala, presja natychmiast po stracie.'],
+          ['o3','Pojedynki fizyczne w środku pola','Jak radzi sobie z silnymi środkowymi pomocnikami rywala? Ile pojedynków wygrał?','Siła w pojedynkach i agresywność: zdolność przebicia się w twardych starciach w środku pola.'],
+          ['o4','Orientacja w przestrzeni – offer do podania','Czy ciągle szuka wolnych stref i oferuje się do podań? Czy stoi w cieniu rywala?','Orientacja w przestrzeni: ciągłe szukanie wolnej przestrzeni, oferowanie się do podań, prawidłowe ustawienie przy rozgrywce.'],
+          ['a1','Wsparcie ofensywne – druga fala','Czy aktywnie włącza się w akcje ataku jako druga fala? Czy stwarza zagrożenie strzałem z dystansu?','Wsparcie ofensywne: aktywne włączanie się w akcje ataku, oferta w drugiej fali, zdolność do wykończenia z dystansu.'],
+          ['a2','Produktywność','Gole i asysty w tym meczu oraz w sezonie. Jak bezpośrednio wpływa na fazę ofensywną drużyny?','Wykonywanie SFG: bezpośredni wkład w fazę ofensywną przez gole, asysty i podania do wykończenia.'],
+        ]},
+        { type:'przełączanie', header: 'Przełączanie i naciskanie', items: [
+          ['p1','Pressing po stracie – natychmiastowość','Jak szybko przechodzi do pressingu po stracie piłki – natychmiast, czy z opóźnieniem?','Dynamika: szybkie reakcje na zmiany gry, zdolność do akceleracji przy dochodzeniu do rywala natychmiast po stracie.'],
+          ['p2','Koordynacja pressingu środka pola','Czy koordynuje pressing całego środka pola – kieruje współpartnerami, zamyka strefy?','Zdolności organizacyjne: kierowanie współpartnerami w pomocniczej linii, koordynacja pressingu.'],
+          ['p3','Odbudowanie ustawienia po wyjściu ofensywnym','Jak szybko odbudowuje ustawienie po ofensywnym wyjściu? Czy zostawia lukę za sobą?','Zdolności decyzyjne: szybkie i prawidłowe wybory przy grze pod presją, zdolność zmiany tempa gry.'],
+        ]},
+        { type:'motoryka', header: 'Umiejętności motoryczne i charakter', items: [
+          ['m1','Wytrzymałość – volume gry','Czy utrzymuje wysoki volume gry przez całe 90 min? Czy widać, że dużo biega w obu kierunkach?','Wytrzymałość: radzenie sobie z wysokim wolumenem gry, ciągły ruch między obroną a atakiem przez cały mecz.'],
+          ['m2','Siła fizyczna w starciach','Czy jest silny fizycznie w starciach w środku pola? Czy przebija się przez rywali?','Siła w pojedynkach i agresywność: utrzymanie piłki pod presją, stanowcze odzyskiwanie posiadania.'],
+          ['m3','Dynamika i eksplozywność','Czy eksplozywny przy dochodzeniu do rywala i wychodzeniu do kontrataku?','Dynamika: szybkie reakcje na zmiany gry, zdolność do akceleracji przy dochodzeniu i wspieraniu ataku.'],
+          ['m4','Szybkość decyzji pod presją','Jak szybko podejmuje decyzję pod presją – czy gra prosta i szybka, czy waha się?','Zdolności decyzyjne: szybkie i prawidłowe wybory przy grze pod presją, zdolność zmiany tempa gry.'],
+          ['m5','Zdolności organizacyjne','Czy widać naturalną chęć organizowania gry drużyny? Czy jest "motorem" środka pola?','Zdolności organizacyjne: kierowanie współpartnerami w pomocniczej linii, właściwe ukierunkowanie ruchu drużyny.'],
+        ]},
+      ],
+      note: 'Wymagania kondycyjne: dystans 11 500 m, HIR 800 m, maks. prędkość 32+ km/h, player load 1200. Kluczowe wskaźniki: liczba podań, podania do finalnej tercji, stosunek strat do zysków.'
+    },
+    cam: {
+      title: 'Środkowy ofensywny pomocnik (dziesiątka)', code: 'CAM',
+      basic: BASIC_COMMON,
+      blocks: [
+        { type:'technika', header: 'Technika i taktyka', items: [
+          ['t1','Technika podania – ostatnie podanie','Ile podań do sytuacji bramkowej lub do strefy finalnej wykonał? Jak oceniasz ich jakość i precyzję?','Podania finalne i przedfinalne: decydujące rozwiązanie w finalnej tercji, podanie do sytuacji bramkowej.'],
+          ['t2','Technika podania – krótkie kombinacje','Czy sprawnie gra na jeden dotyk w połączeniu z partnerami? Jak wygląda technika w szybkich wymianach?','Technika kopania: zdolność szybkiego kombinowania na małej przestrzeni i otwierania gry precyzyjnym podaniem.'],
+          ['t3','Drybling 1v1 w finalnej tercji','Czy skutecznie mija rywali w finalnej tercji? Jak zachowuje się pod presją – szuka kontaktu czy go unika?','Praca z piłką i drybling: pewność techniczna, zdolność minięcia rywala w grze 1:1, utrzymanie piłki pod presją.'],
+          ['t4','Wykończenie – strzał','Czy stwarza zagrożenie strzałem – z dystansu i wewnątrz pola karnego? Ile prób i jaka jakość?','Wykończenie: zagrożenie z drugiej fali, zdolność do wykończenia zza pola karnego i błyskawicznie wewnątrz.'],
+          ['t5','Kreatywność i przegląd gry','Czy tworzy nieoczekiwane rozwiązania? Czy widzi opcje których inni nie widzą? Konkretne sytuacje?','Kreatywność i przegląd gry: zdolność tworzenia niespodziewanych rozwiązań, dyktowania tempa gry.'],
+          ['t6','SFG – wykonanie','Czy wykonuje rzuty wolne lub rożne? Jak oceniasz ich jakość, siłę i pomysłowość?','Wykonywanie ofensywnych SFG: precyzyjne wykonanie rzutów wolnych, rożnych i stałych fragmentów z gry.'],
+        ]},
+        { type:'obrona', header: 'Obrona i atak', items: [
+          ['o1','Pressing – aktywność przy stracie','Czy aktywnie włącza się w pressing jako pierwszy lub drugi zawodnik? Czy zmusza rywala do błędów?','Aktywność pressująca: aktywne włączanie się w wysoki pressing, szybkie dochodzenie do rozgrywki rywala.'],
+          ['o2','Gra pozycyjna w bloku obronnym','Czy zdyscyplinowanie ustawia się przy organizacji obronnej? Czy zamyka środek i odcina linie podania?','Gra pozycyjna i gra w bloku: prawidłowe ustawienie przy organizacji obronnej, krycie stref centralnych.'],
+          ['o3','Praca z przestrzenią między liniami','Czy ciągle szuka wolnych stref między liniami rywala? Czy jest stale dostępny do podania?','Wyczucie gry i praca z przestrzenią: inteligentny ruch między liniami rywala, częsta oferta dla współpartnerów.'],
+          ['o4','Uzupełnienie do strefy finalnej','Ile razy wbiegł jako drugi do pola karnego? Czy wyczucie czasu tych wbiegań jest prawidłowe?','Uzupełnienie do strefy finalnej: aktywne wbieganie do wykończenia, prawidłowe wyczucie czasu ruchu za napastnikami.'],
+          ['a1','Udział w kombinacjach blisko pola karnego','Jak angażuje się w wymienne ruchy i szybkie kombinacje z napastnikiem i skrzydłowymi?','Zdolności kombinacyjne: rozwijanie kombinacji w atakującej tercji, szybkie przełączenie między tworzeniem a wykończeniem.'],
+          ['a2','Produktywność','Gole i asysty w tym meczu oraz ogólnie w sezonie – jak oceniasz jego bezpośredni wkład?','Produktywność: bezpośredni wkład w gole i asysty. Wzorzec: Zorvan 5+10, podania do wykończenia 1,71/mecz.'],
+        ]},
+        { type:'przełączanie', header: 'Przełączanie i naciskanie', items: [
+          ['p1','Powrót po utracie piłki wysoko','Jak szybko wraca do ustawienia po utracie piłki w wysokiej pozycji?','Szybkość przełączenia: natychmiastowa reakcja przy stracie, szybki powrót do ustawienia obronnego.'],
+          ['p2','Przejście twórca gry - presser','Czy potrafi błyskawicznie przejść z roli twórcy gry do pressera – czy jest to naturalne i intensywne?','Nieustanna aktywność: stała chęć przyjęcia odpowiedzialności, bycia kreatywnym motorem drużyny w obu fazach.'],
+          ['p3','Reakcja na odzysk piłki','Jak szybko reaguje na odzysk piłki przez drużynę – czy natychmiast oferuje się do podania?','Stała oferta: ciągłe szukanie wolnych przestrzeni, częsta oferta dla współpartnerów przy odzysku piłki.'],
+        ]},
+        { type:'motoryka', header: 'Umiejętności motoryczne i charakter', items: [
+          ['m1','Dynamika i szybkość na małej przestrzeni','Jak szybki jest przy zmianie kierunku i uwolnieniu od rywala na małej przestrzeni w środku pola?','Dynamika i szybkość: szybki ruch na małej przestrzeni, akceleracja przy zmianie kierunku, uwolnienie od rywala.'],
+          ['m2','Wytrzymałość','Czy utrzymuje wysoką intensywność przez całe 90 minut? Czy jest aktywny w obu fazach przez cały mecz?','Wytrzymałość: zdolność pracy w wysokiej intensywności przez cały mecz, aktywne angażowanie się w atak i pressing.'],
+          ['m3','Szybkość decyzji pod presją','Czy podejmuje właściwe decyzje przy wysokim tempie gry i presji czasu? Ile złych decyzji popełnił?','Zdolności decyzyjne: wybór właściwego rozwiązania pod presją i przy wysokim tempie gry.'],
+          ['m4','Odwaga i odpowiedzialność','Czy bierze piłkę w trudnych momentach? Czy szuka kontaktu z piłką gdy drużyna ma problemy?','Nieustanna aktywność: stała chęć przyjęcia odpowiedzialności, kreowanie gry drużyny w trudnych momentach.'],
+          ['m5','Charakter i wpływ na grę drużyny','Czy drużyna gra lepiej gdy on jest aktywny? Czy widać jego pozytywny wpływ na partnerów?','Charakter: motywowanie współpartnerów, przyjmowanie odpowiedzialności w kluczowych momentach meczu.'],
+        ]},
+      ],
+      note: 'Wymagania kondycyjne: dystans 11 500 m, HIR 900 m, liczba akceleracji 200, maks. prędkość 32+ km/h, player load 1100. Kluczowy wskaźnik: liczba podań do wykończenia oraz dotknięcia w polu karnym.'
+    },
+    winger: {
+      title: 'Skrzydłowy napastnik', code: 'LW / RW',
+      basic: BASIC_COMMON,
+      blocks: [
+        { type:'technika', header: 'Technika i taktyka', items: [
+          ['t1','Drybling 1v1','Ile prób dryblingu podjął, ile zakończył sukcesem? Jakie techniki stosuje – zmiana tempa, zmiana kierunku, finta?','Praca z piłką i drybling: siła w grze 1:1 i odwaga. Zdolność minięcia rywala nawet przeciwko fizycznie silniejszym obrońcom.'],
+          ['t2','Technika dośrodkowania','Ile dośrodkowań wykonał i z jakich pozycji? Jak oceniasz jakość – w przestrzeń, na głowę, po ziemi?','Dośrodkowania: jakościowe podania do pola karnego z różnych pozycji – zarówno po wejściu jak i z nieruchomej pozycji.'],
+          ['t3','Wykończenie – strzał','Jak wygląda strzał z nogi dominującej i słabszej? Czy stwarza zagrożenie z obu stron?','Wykończenie obiema nogami: zagrożenie przy strzale zarówno z centralnych jak i bocznych pozycji, wariacja wykończenia.'],
+          ['t4','Zdolności kombinacyjne','Jak współpracuje z bocznym obrońcą i środkowym pomocnikiem? Gra na jeden dotyk, krótkie wymiany?','Zdolności kombinacyjne: współpraca z bocznym obrońcą i środkowym pomocnikiem, udział w szybkich kombinacjach.'],
+          ['t5','Praca z przestrzenią','Czy rozciąga obronę rywala wszerz? Czy szuka wolnej przestrzeni za linią obrony rywala?','Wyczucie gry i praca z przestrzenią: inteligentny ruch w przestrzeni skrzydłowej, szukanie optymalnych pozycji.'],
+          ['t6','Uzupełnienie do strefy finalnej','Ile razy wbiegł na drugą falę do pola karnego? Jak oceniasz wyczucie czasu i jakość tych wbiegań?','Uzupełnienie do strefy finalnej: aktywny ruch do wykończenia z drugiej fali, prawidłowe wyczucie czasu wbiegań.'],
+        ]},
+        { type:'obrona', header: 'Obrona i atak', items: [
+          ['o1','Pressing bocznego obrońcy rywala','Czy aktywnie atakuje bocznego obrońcę rywala? Jak blisko podchodzi i jak skutecznie odcina rozgrywkę?','Aktywność pressująca: aktywne włączanie się w wysoki i średni pressing, ograniczanie rozgrywki bocznych obrońców.'],
+          ['o2','Powroty defensywne','Jak szybko wraca do własnej połowy po utracie piłki? Czy odpowiedzialnie wspiera bocznego obrońcę?','Powroty i nawiązywanie się do obrońców rywala: odpowiedzialna praca do tyłu, wsparcie bocznego obrońcy.'],
+          ['o3','Zachowanie w bloku obronnym','Czy prawidłowo ustawia się w bloku niskim? Czy zamyka przestrzeń i nie pozostaje zbyt wysoko?','Gra pozycyjna i gra w bloku: zdyscyplinowane ustawienie w fazie defensywnej, zabezpieczenie przestrzeni na skrzydle.'],
+          ['o4','Współdziałanie z bocznym obrońcą (defensywnie)','Czy buduje tandemy obronne z bocznym obrońcą – wspólne krycie, zamiana ról, komunikacja?','Współdziałanie z bocznym obrońcą: wspólna działalność defensywna, zabezpieczanie przestrzeni, zamiana ról.'],
+          ['a1','Ruch bez piłki – offer','Czy stale oferuje się do podań? Czy jest aktywny kiedy piłka jest po drugiej stronie boiska?','Aktywność bez piłki i stała oferta: ciągły ruch do wolnych przestrzeni, dążenie do rozciągania gry wszerz.'],
+          ['a2','Produktywność','Gole, asysty, stwarzanie sytuacji – jak bezpośrednio wpłynął na fazę ofensywną drużyny w tym meczu?','Produktywność: bezpośredni wkład w gole i asysty. Kluczowy wskaźnik: drybling i jego skuteczność.'],
+        ]},
+        { type:'przełączanie', header: 'Przełączanie i naciskanie', items: [
+          ['p1','Reakcja na stratę – powrót lub pressing','Jak szybko reaguje na utratę piłki – natychmiast dochodzi do rywala, czy cofa się biernie?','Szybkość przełączenia: natychmiastowa reakcja przy stracie – szybki powrót lub wypad do kontrataku.'],
+          ['p2','Wyjście do kontrataku','Czy przy odzysku piłki przez drużynę natychmiast wychodzi głęboko do kontrataku?','Szybkość przełączenia: natychmiastowa reakcja przy zdobyciu piłki – szybki wypad w przestrzeń za linią obrony.'],
+          ['p3','Gra w bloku niskim – dyscyplina','Jak wygląda zachowanie w bloku niskim – czy wraca i ustawia się, czy pozostaje wysoko?','Ruch bez piłki: prawidłowe krycie przy rozgrywce rywala, zapobieganie wolnej przestrzeni dla rywala.'],
+        ]},
+        { type:'motoryka', header: 'Umiejętności motoryczne i charakter', items: [
+          ['m1','Szybkość na otwartej przestrzeni','Jak szybki jest na otwartej przestrzeni? Czy jest w stanie oderwać się od obrońcy?','Szybkość: kluczowy oręż przy przejściu do ataku, tworzenie przewagi w przestrzeniach skrzydłowych.'],
+          ['m2','Eksplozywność – akceleracja','Jak oceniasz akcelerację przy pierwszym kroku i przy zmianie kierunku?','Dynamika: eksplozywna akceleracja, szybka zmiana kierunku, zdolność reagowania na ruch rywala i partnerów.'],
+          ['m3','Wytrzymałość','Czy utrzymuje intensywność sprintów przez całe 90 minut? Czy w drugiej połowie jest wyraźnie mniej aktywny?','Wytrzymałość: zdolność do wielokrotnych sprintów przez cały mecz, powroty do obrony i ciągła oferta z przodu.'],
+          ['m4','Odwaga 1v1 i charakter','Czy szuka kontaktu i podejmuje ryzyko w starciach 1v1? Jak reaguje po nieudanej akcji – od razu wraca do gry?','Siła 1:1 i odwaga: intensywność w pojedynkach, zdolność przebicia się nawet przeciwko fizycznie silniejszym obrońcom.'],
+        ]},
+      ],
+      note: 'Wymagania kondycyjne: dystans 11 000 m, HIR 700 m, liczba akceleracji 250, maks. prędkość 33+ km/h, player load 1100. Kluczowe wskaźniki: drybling (liczba i skuteczność), dośrodkowania, podania do wykończenia.'
+    },
+    cf: {
+      title: 'Napastnik środkowy', code: 'CF / ST',
+      basic: BASIC_COMMON,
+      blocks: [
+        { type:'technika', header: 'Technika i taktyka', items: [
+          ['t1','Wykończenie – nogi','Ile strzałów oddał i z jakich pozycji? Jak oceniasz jakość – strzał z dystansu, wole, dobitka, lewa/prawa noga?','Wykończenie (obie nogi): wariacja w rozwiązywaniu sytuacji, zdolność zdobywania goli z różnych pozycji.'],
+          ['t2','Wykończenie – głowa','Ile prób główkowania? Czy jest zagrożeniem przy dośrodkowaniach i SFG?','Pojedynki powietrzne i gra głową: siła w starciach z obrońcami, zagrożenie przy dośrodkowaniach i SFG.'],
+          ['t3','Gra plecami do bramki','Jak przyjmuje piłkę tyłem do bramki? Czy potrafi utrzymać piłkę i rozegrać partnera?','Aktywność bez piłki i gra plecami do bramki: utrzymanie piłki dla drużyny, tworzenie kombinacji plecami do bramki.'],
+          ['t4','Wybór miejsca – ustawianie się','Czy instynktownie zajmuje właściwe pozycje do wykończenia? Czy chodzi na "ślepe" wbiegania i wykorzystuje ruch?','Wybór miejsca w polu karnym: instynkt do prawidłowego ruchu między obrońcami, znajdowanie idealnej pozycji do wykończenia.'],
+          ['t5','Praca z piłką pod presją','Czy utrzymuje piłkę przy obrońcach? Jak wygląda pierwsze przyjęcie w polu karnym?','Praca z piłką: zdolność przyjęcia piłki pod presją, utrzymania jej i przygotowania sytuacji do wykończenia.'],
+          ['t6','Zdolności kombinacyjne','Czy gra na jeden dotyk, otwiera przestrzeń partnerom, aktywnie uczestniczy w kombinacjach?','Zdolności kombinacyjne i współpraca: aktywne włączanie się w drużynowe kombinacje, gra na jedno dotknięcie.'],
+        ]},
+        { type:'obrona', header: 'Obrona i atak', items: [
+          ['o1','Pressing stopera i bramkarza','Czy aktywnie atakuje linię obronną rywala przy budowaniu? Jak skutecznie odcina linie podania?','Aktywność pressująca: aktywne włączanie się w pressing, atakowanie rozgrywki stoperów i bramkarza rywala.'],
+          ['o2','Gra w bloku – zamykanie środka','Jak ustawia się przy zorganizowanej obronie rywala – zamyka środek i odcina linie, czy stoi biernie?','Gra pozycyjna i gra w bloku: prawidłowe ustawienie przy zorganizowanej obronie, zamykanie podań do środka boiska.'],
+          ['o3','Ruch bez piłki – wbiegania za linię','Jak często i jak inteligentnie biega za linię obrony rywala? Czy stale jest dostępny do podania?','Aktywność bez piłki: utrzymanie piłki, zdolność uwolnienia się w przestrzeń za linią obrony.'],
+          ['o4','Pojedynki powietrzne','Ile razy wygrał/przegrał pojedynki w powietrzu? Czy dominuje fizycznie przy dośrodkowaniach?','Siła i odporność w pojedynkach osobistych: wywalczenie pozycji w polu karnym, dominacja przy dośrodkowaniach.'],
+          ['a1','Reakcja na odbite piłki','Jak szybko reaguje na odbite piłki lub niecelne interwencje obrońców – czy jest w odpowiednim miejscu?','Wyczucie gry: antycypacja rozwoju sytuacji, szybka reakcja na odbite piłki, ciągła oferta do podań.'],
+          ['a2','Produktywność','Gole i asysty w tym meczu i ogólnie w sezonie. Ile sytuacji stworzył sobie i partnerom, ile zmarnował?','Produktywność: zdolność przekuwania okazji w gole. Wzorzec: Kliment 18+2, 2,41 strzały/mecz, 4,22 dotknięcia w PK.'],
+        ]},
+        { type:'przełączanie', header: 'Przełączanie i naciskanie', items: [
+          ['p1','Pressing po stracie – natychmiastowość','Jak szybko przechodzi do pressingu po utracie piłki przez drużynę?','Szybkość przełączenia: natychmiastowa reakcja na stratę lub zdobycie piłki, szybkie przejście do pressingu.'],
+          ['p2','Wyjście do kontrataku','Czy przy odzysku piłki natychmiast wychodzi głęboko do kontrataku i zagraża za linię obrony?','Szybkość i zdolność do powtarzania sprintów: kluczowa dla ciągłego zagrożenia za linią obrony rywala.'],
+          ['p3','Pressing przy rozgrywce rywala od tyłu','Jak wygląda praca w pressing przy rozgrywce bramkarza i obrońców rywala – kieruje pressing drużyny?','Aktywność pressująca: aktywne włączanie się w pressing, atakowanie rozgrywki stoperów i bramkarza.'],
+        ]},
+        { type:'motoryka', header: 'Umiejętności motoryczne i charakter', items: [
+          ['m1','Szybkość i dynamika','Czy potrafi oderwać się od obrońcy? Jak szybkie jest przyspieszenie na małej przestrzeni w polu karnym?','Dynamika: eksplozywne przyspieszenie na małej przestrzeni, szybka zmiana kierunku przy wbieganiach.'],
+          ['m2','Siła fizyczna w pojedynkach','Czy jest odporny na kontakt z obrońcami? Czy utrzymuje piłkę przy silnych stoperach?','Siła i odporność w pojedynkach: zdolność przebicia się przeciwko stoperom, wywalczenie pozycji w polu karnym.'],
+          ['m3','Wytrzymałość i aktywność','Czy jest aktywny przez całe 90 minut? Czy angażuje się w pressing i ruch bez piłki w końcówce meczu?','Szybkość i zdolność do powtarzania sprintów: kluczowa dla aktywnego angażowania się w kontrataki przez cały mecz.'],
+          ['m4','Pewność siebie i głód gola','Czy szuka strzału i kreuje sytuacje? Jak reaguje po zmarnowanej okazji – wraca do gry z determinacją?','Pewność siebie i głód gola: chęć przyjęcia odpowiedzialności, pragnienie rozstrzygania meczów.'],
+          ['m5','Charakter przywódczy','Czy drużyna rośnie z nim na boisku? Jak widoczna jest jego obecność w trudnych momentach meczu?','Nie boi się odpowiedzialności: ciągłe dążenie do wykończenia, motywowanie partnerów przykładem.'],
+        ]},
+      ],
+      note: 'Wymagania kondycyjne: dystans 11 000 m, HIR 600 m, liczba akceleracji 300, maks. prędkość 33+ km/h, player load 1100. Kluczowe wskaźniki: liczba strzałów, dotknięcia w polu karnym, skuteczność pojedynków powietrznych.'
+    }
+  };
+
+  Object.entries(sheets).forEach(([id, def]) => {
+    const el = document.getElementById(id);
+    let html = `<div class="sheet-header"><h2>${def.title}</h2><span class="pos-code">${def.code}</span></div>`;
+    html += progressBar(id);
+    html += `<div class="obs-notes-panel" id="obsPanel_${id}"></div>`;
+    html += `<div class="section-label">Dane podstawowe</div>`;
+    html += `<div class="basic-grid">` + def.basic.map(i => basicItem(id+'_'+i[0], i[1], i[2])).join('') + `</div>`;
+
+    // Układ zgodny z PDF: technika|obrona (wiersz 1), przełączanie|motoryka (wiersz 2)
+    const typeOrder = ['technika','obrona','przełączanie','motoryka'];
+    const sorted = [...def.blocks].sort((a,b) => typeOrder.indexOf(a.type) - typeOrder.indexOf(b.type));
+    for (let b = 0; b < sorted.length; b += 2) {
+      const b1 = sorted[b], b2 = sorted[b+1];
+      if (b2) {
+        html += `<div class="q-grid q-grid-2col">`;
+        html += renderBlock(id, b1) + renderBlock(id, b2);
+        html += `</div>`;
+      } else {
+        html += `<div class="q-grid">` + renderBlock(id, b1) + `</div>`;
+      }
+    }
+
+    html += finalBlock(id);
+    html += `<div class="sheet-note">${def.note}</div>`;
+    el.innerHTML = html;
+  });
+
+  function renderBlock(pos, block) {
+    const items = block.items.map(([key, title, question, hint]) =>
+      `<li class="q-item">
+        <div class="q-item-header" onclick="toggleQ(this)">
+          <div class="q-dot"></div>
+          <div class="q-text">${title ? '<strong>'+title+'</strong>' : ''}<span>${question}</span></div>
+          <div class="q-toggle">▾</div>
+        </div>
+        <div class="q-answer-wrap">
+          ${hint ? `<div class="q-hint"><span class="q-hint-label">Sigma szuka:</span> ${hint}</div>` : ''}
+          <textarea data-key="${pos}_${key}" placeholder="Twoje notatki..."></textarea>
+        </div>
+      </li>`
+    ).join('');
+    return `<div class="q-block">
+      <div class="q-block-header" data-type="${block.type||'technika'}">${block.header}</div>
+      <ul class="q-list">${items}</ul>
+    </div>`;
+  }
+})();
+
+// ── THEME TOGGLE ──
+function applyTheme(dark) {
+  document.body.classList.toggle('dark', dark);
+  document.getElementById('themeIcon').textContent = dark ? '☀️' : '🌙';
+  document.getElementById('themeLabel').textContent = dark ? 'Jasny' : 'Ciemny';
+  try { localStorage.setItem('sigma_theme', dark ? 'dark' : 'light'); } catch(e) {}
+}
+function toggleTheme() {
+  applyTheme(!document.body.classList.contains('dark'));
+}
+function loadTheme() {
+  try {
+    const saved = localStorage.getItem('sigma_theme');
+    applyTheme(saved === 'dark');
+  } catch(e) {}
+}
+
+// ── OBS NOTES PANEL (in form) ──
+function refreshObsPanels() {
+  const posIds = ['gk','cb','lb','cm','cam','winger','cf'];
+  posIds.forEach(pos => {
+    const panel = document.getElementById('obsPanel_' + pos);
+    if (!panel) return;
+    const matches = [];
+    ['A','B'].forEach(s => {
+      const slot = obsSlots[s];
+      if (slot && slot.pos === pos && slot.notes.trim()) {
+        matches.push({ slot: s, name: slot.name.trim() || ('Zawodnik ' + s), notes: slot.notes.trim() });
+      }
+    });
+    if (matches.length === 0) { panel.innerHTML = ''; return; }
+    panel.innerHTML = matches.map(m => `
+      <div class="obs-notes-card" id="obsCard_${pos}_${m.slot}">
+        <div class="obs-notes-card-header" onclick="toggleObsCard('${pos}','${m.slot}')">
+          <span class="obs-notes-badge">Slot ${m.slot}</span>
+          <div class="obs-notes-card-title">${m.name}<span>· notatki z trybu obserwacji</span></div>
+          <span class="obs-notes-card-toggle">▾</span>
+        </div>
+        <div class="obs-notes-card-body">
+          <div class="obs-notes-text">${m.notes.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+        </div>
+      </div>
+      <div class="obs-notes-placeholder" id="obsPlaceholder_${pos}_${m.slot}"></div>`).join('');
+  });
+}
+
+function toggleObsCard(pos, slot) {
+  const card = document.getElementById('obsCard_' + pos + '_' + slot);
+  const placeholder = document.getElementById('obsPlaceholder_' + pos + '_' + slot);
+  if (!card) return;
+
+  const wasOpen = card.classList.contains('open');
+
+  // Close all open cards first
+  document.querySelectorAll('.obs-notes-card.open').forEach(c => {
+    c.classList.remove('open');
+    const id = c.id; // obsCard_pos_slot
+    const parts = id.replace('obsCard_','').split('_');
+    const ph = document.getElementById('obsPlaceholder_' + parts[0] + '_' + parts[1]);
+    if (ph) ph.style.height = '';
+  });
+
+  if (!wasOpen) {
+    card.classList.add('open');
+    // Set placeholder height to match card so layout doesn't jump
+    if (placeholder) {
+      requestAnimationFrame(() => {
+        placeholder.style.height = card.offsetHeight + 'px';
+      });
+    }
+  }
+}
+
+// ── TOGGLE Q ──
+function toggleQ(header) {
+  const li = header.closest('.q-item');
+  li.classList.toggle('q-open');
+}
+
+// ── TABS ──
+function show(id, btn) {
+  document.querySelectorAll('.sheet').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(btn) btn.classList.add('active');
+}
+
+// ── STORAGE ──
+const KEY = 'sigma_v2';
+let saveTimer;
+
+function saveAll() {
+  const data = {};
+  document.querySelectorAll('[data-key]').forEach(el => { data[el.dataset.key] = el.value; });
+  try { localStorage.setItem(KEY, JSON.stringify(data)); } catch(e) {}
+  const ind = document.getElementById('saveInd');
+  ind.classList.add('show');
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => ind.classList.remove('show'), 2000);
+  updateAllProgress();
+}
+
+function loadAll() {
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (!raw) return;
+    const data = JSON.parse(raw);
+    document.querySelectorAll('[data-key]').forEach(el => {
+      if (data[el.dataset.key] !== undefined) el.value = data[el.dataset.key];
+    });
+  } catch(e) {}
+  updateAllProgress();
+}
+
+// ── PROGRESS ──
+function updateProgress(id) {
+  const sheet = document.getElementById(id);
+  if (!sheet) return;
+  const fields = sheet.querySelectorAll('input[type="text"], textarea, select');
+  let filled = 0;
+  fields.forEach(f => { if (f.value && f.value.trim() && f.value !== '—') filled++; });
+  const pct = fields.length ? Math.round(filled / fields.length * 100) : 0;
+  const fill = document.getElementById(id+'-prog');
+  const label = document.getElementById(id+'-pct');
+  if (fill) fill.style.width = pct + '%';
+  if (label) label.textContent = pct + '%';
+  // dot colours
+  sheet.querySelectorAll('.q-item').forEach(li => {
+    const ta = li.querySelector('textarea');
+    li.classList.toggle('q-answered', !!(ta && ta.value && ta.value.trim()));
+  });
+}
+
+function updateAllProgress() {
+  ['gk','cb','lb','cm','cam','winger','cf'].forEach(updateProgress);
+}
+
+// ── CLEAR ──
+function clearSheet() {
+  const active = document.querySelector('.sheet.active');
+  const name = active.querySelector('input[data-key$="_name"]')?.value || 'brak nazwy';
+  if (!confirm('Wyczyścić cały aktualny arkusz (' + name + ')? Tej operacji nie można cofnąć.')) return;
+  active.querySelectorAll('input[type="text"], textarea').forEach(el => el.value = '');
+  active.querySelectorAll('select').forEach(el => el.value = '');
+  saveAll();
+}
+
+// ── EXPORT ──
+const sheetNames = {gk:'Bramkarz',cb:'Środkowy obrońca',lb:'Boczny obrońca',cm:'Środkowy pomocnik',cam:'Ofensywny pomocnik',winger:'Skrzydłowy',cf:'Napastnik'};
+
+function openExport() {
+  const id = document.querySelector('.sheet.active').id;
+  const sheet = document.getElementById(id);
+  let out = '═══════════════════════════════════════════════\n';
+  out += '  SK SIGMA OŁOMUNIEC – RAPORT ZWIADOWCZY\n';
+  out += '  Pozycja: ' + sheetNames[id] + '\n';
+  out += '═══════════════════════════════════════════════\n\n';
+
+  out += '── DANE PODSTAWOWE ──\n';
+  sheet.querySelectorAll('.basic-item').forEach(item => {
+    const lbl = item.querySelector('label')?.textContent?.trim() || '';
+    const val = item.querySelector('input')?.value?.trim() || '';
+    if (val) out += lbl + ': ' + val + '\n';
+  });
+
+  sheet.querySelectorAll('.q-block').forEach(block => {
+    const header = block.querySelector('.q-block-header')?.textContent?.trim() || '';
+    let sec = '';
+    block.querySelectorAll('.q-item').forEach(li => {
+      const title = li.querySelector('.q-text strong')?.textContent?.trim() || '';
+      const question = li.querySelector('.q-text span')?.textContent?.trim() || '';
+      const answer = li.querySelector('textarea')?.value?.trim() || '';
+      if (answer) {
+        sec += (title ? '• ' + title + '\n' : '');
+        sec += '  Pyt: ' + question + '\n';
+        sec += '  Odp: ' + answer + '\n\n';
+      }
+    });
+    if (sec) { out += '\n── ' + header.toUpperCase() + ' ──\n'; out += sec; }
+  });
+
+  out += '\n── OCENA KOŃCOWA ──\n';
+  const g = (k) => sheet.querySelector('[data-key$="_'+k+'"]')?.value?.trim() || '';
+  if (g('scout')) out += 'Skaut: ' + g('scout') + '\n';
+  if (g('rec') && g('rec') !== '—') out += 'Zalecenie: ' + g('rec') + '\n';
+  if (g('grade') && g('grade') !== '—') out += 'Ocena: ' + g('grade') + '\n';
+  if (g('pot') && g('pot') !== '—') out += 'Potencjał: ' + g('pot') + '\n';
+  if (g('summary')) out += '\nUwagi ogólne:\n' + g('summary') + '\n';
+  out += '\n═══════════════════════════════════════════════\n';
+
+  document.getElementById('exportText').textContent = out;
+  document.getElementById('exportModal').classList.add('show');
+}
+
+function closeExport() { document.getElementById('exportModal').classList.remove('show'); }
+
+function copyExport() {
+  const text = document.getElementById('exportText').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = event.target; const orig = btn.textContent;
+    btn.textContent = '✓ Skopiowano';
+    setTimeout(() => btn.textContent = orig, 2000);
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+  });
+}
+
+document.getElementById('exportModal').addEventListener('click', e => { if (e.target === e.currentTarget) closeExport(); });
+
+// ── LIVE SAVE ──
+document.addEventListener('input', e => { if (e.target.dataset.key) saveAll(); });
+document.addEventListener('change', e => { if (e.target.dataset.key) saveAll(); });
+
+// ── PREFILL: Emil Konradsen Ceide ──
+function prefillCeide() {
+  function fill(key, value) {
+    const el = document.querySelector('[data-key="' + key + '"]');
+    if (el && !el.value.trim()) el.value = value;
+  }
+  fill('winger_name',   'Emil Konradsen Ceide');
+  fill('winger_dob',    '03.09.2001');
+  fill('winger_height', '185 cm');
+  fill('winger_nat',    'Norwegia / Haiti');
+  fill('winger_club',   'Rosenborg BK');
+  fill('winger_foot',   'Prawa');
+  fill('winger_agent',  'Nordic Sky');
+  fill('winger_t1',
+    'Wątpliwości odnośnie gotowości do gry 1v1 – nie zawsze decyduje się na jazdę w pojedynku gdy ma okazję. ' +
+    'Jednak gdy to robi, wykonuje to całkiem nieźle. Prowadzenie zarówno prawą jak i lewą nogą na dobrym poziomie. ' +
+    'W pewnym sensie zaawansowany technicznie.');
+  fill('winger_t2',
+    'Potrafi wgrać w pole karne lewą nogą – nie waha się przed takim zagraniem. Nie widać wyraźnych zahamowań przy podaniu w 1. strefę.');
+  fill('winger_t5',
+    'Tam gdzie się da gra w pierwszy kontakt – dobry rytm kombinacyjny gdy drużyna ma posiadanie.');
+  fill('winger_t6',
+    'Dobrze skanuje przestrzeń gdy bez piłki. Dobre czytanie gry z daleka – rozumie zależności taktyczne, ' +
+    'wie kiedy się przesunąć, a kiedy odpuścić. Dobry ruch nad piłkę w fazie OA.');
+  fill('winger_o1',
+    'Wyczuwa moment pressingu, rozumie zależności taktyczne – kiedy przesunąć, kiedy odpuścić. ' +
+    'Niezły powrót znad piłki, natomiast w działaniach defensywnych nieprzekonany do pełnego udziału.');
+  fill('winger_o2',
+    'Działania defensywne są "na dystans" – nie wchodzi w kontakt z przeciwnikiem. Wyraźne braki ' +
+    'w odpowiedzialności za obronę: odpuszcza grę z tyłu, nie widząc realnych korzyści z tych działań. ' +
+    'Nie jest to kwestia możliwości, ale podejścia i chęci.');
+  fill('winger_o3',
+    'Dobry ruch nad piłkę w fazie OA. Dobrze skanuje przestrzeń gdy bez piłki – stała oferta dla partnerów.');
+  fill('winger_p1',
+    'Dobry ruch nad piłkę w fazie przejściowej OA. Wyczuwa moment wyjścia do kontrataku.');
+  fill('winger_p3',
+    'Braki w przełączeniu defensywnym – przy niskim bloku pozostaje na dystans, nie włącza się w blokowanie przestrzeni wszerz.');
+  fill('winger_m1',
+    'Dobry atak nad piłkę, sprawny technicznie przy wyższej prędkości. Prowadzenie obu nogach na solidnym poziomie.');
+  fill('winger_m3',
+    'Nie zawsze decyduje się na jazdę 1v1 gdy ma taką okazję – pytanie czy to kwestia odwagi czy wyboru taktycznego. Gdy jednak wchodzi w pojedynek, robi to dobrze.');
+  show('winger', document.querySelectorAll('.tab-btn')[6]);
+  saveAll();
+}
+
+// ── INIT ──
+document.addEventListener('DOMContentLoaded', () => { loadTheme(); loadAll(); loadObsBrudnopis(); loadObsSlots(); refreshObsPanels(); });
+setTimeout(() => { loadTheme(); loadAll(); loadObsBrudnopis(); loadObsSlots(); refreshObsPanels(); }, 150);
+</script>
+<!-- ======================== REPORT MODAL ======================== -->
+<div class="report-overlay" id="reportModal">
+  <div class="report-modal">
+    <div class="report-modal-header">
+      <div class="report-modal-title">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        Raport skautingowy
+      </div>
+      <div class="report-modal-actions">
+        <button class="btn btn-export" id="copyEnBtn" onclick="copyReportLang('en')" style="display:none">Kopiuj EN</button>
+        <button class="btn" id="copyPlBtn" onclick="copyReportLang('pl')" style="display:none;border-color:var(--border);color:var(--muted)">Kopiuj PL</button>
+        <button class="modal-close" onclick="closeReport()">✕</button>
+      </div>
+    </div>
+
+    <!-- LOADING -->
+    <div class="report-loading" id="reportLoading">
+      <div class="report-spinner"></div>
+      <p id="reportLoadingMsg">Analizuję notatki...</p>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="report-content" id="reportContent" style="display:none">
+      <div class="report-lang-tabs">
+        <button class="report-lang-btn active" onclick="switchLang('en',this)">English (finalny)</button>
+        <button class="report-lang-btn" onclick="switchLang('pl',this)">Polski (kontrola)</button>
+      </div>
+
+      <div class="report-sections" id="reportSectionsEn">
+        <div class="report-section" data-section="technika">
+          <div class="report-section-label" data-type="technika">Technika &amp; Taktika / Technique &amp; Tactics</div>
+          <textarea class="report-textarea" id="rep_en_technika" placeholder="..."></textarea>
+        </div>
+        <div class="report-section" data-section="obrona">
+          <div class="report-section-label" data-type="obrona">Obrona &amp; Útok / Defence &amp; Attack</div>
+          <textarea class="report-textarea" id="rep_en_obrona" placeholder="..."></textarea>
+        </div>
+        <div class="report-section" data-section="przełączanie">
+          <div class="report-section-label" data-type="przełączanie">Přepínání &amp; Pressing / Transition &amp; Pressing</div>
+          <textarea class="report-textarea" id="rep_en_pressing" placeholder="..."></textarea>
+        </div>
+        <div class="report-section" data-section="motoryka">
+          <div class="report-section-label" data-type="motoryka">Motorika &amp; Charakter / Physical &amp; Character</div>
+          <textarea class="report-textarea" id="rep_en_motoryka" placeholder="..."></textarea>
+        </div>
+        <div class="report-section" data-section="summary">
+          <div class="report-section-label" style="border-left-color:#003f8a;color:#003f8a">Finální hodnocení / Final assessment</div>
+          <textarea class="report-textarea report-textarea-lg" id="rep_en_summary" placeholder="..."></textarea>
+        </div>
+      </div>
+
+      <div class="report-sections" id="reportSectionsPl" style="display:none">
+        <div class="report-section">
+          <div class="report-section-label" data-type="technika">Technika i taktyka</div>
+          <textarea class="report-textarea" id="rep_pl_technika" placeholder="..."></textarea>
+        </div>
+        <div class="report-section">
+          <div class="report-section-label" data-type="obrona">Obrona i atak</div>
+          <textarea class="report-textarea" id="rep_pl_obrona" placeholder="..."></textarea>
+        </div>
+        <div class="report-section">
+          <div class="report-section-label" data-type="przełączanie">Przełączanie i naciskanie</div>
+          <textarea class="report-textarea" id="rep_pl_pressing" placeholder="..."></textarea>
+        </div>
+        <div class="report-section">
+          <div class="report-section-label" data-type="motoryka">Umiejętności motoryczne i charakter</div>
+          <textarea class="report-textarea" id="rep_pl_motoryka" placeholder="..."></textarea>
+        </div>
+        <div class="report-section">
+          <div class="report-section-label" style="border-left-color:#003f8a;color:#003f8a">Ocena końcowa</div>
+          <textarea class="report-textarea report-textarea-lg" id="rep_pl_summary" placeholder="..."></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* ── GENERATE BUTTON ── */
+  .generate-wrap {
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-top: 1px solid var(--border);
+    background: linear-gradient(135deg, #f0f5ff 0%, #e8f0fe 100%);
+  }
+  .btn-generate {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--sigma-blue);
+    color: white;
+    border: none;
+    padding: 11px 20px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+  }
+  .btn-generate:hover { background: var(--sigma-light); transform: translateY(-1px); }
+  .btn-generate:active { transform: translateY(0); }
+  .generate-hint {
+    font-size: 11px;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  /* ── REPORT MODAL ── */
+  .report-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,15,50,0.65);
+    z-index: 2000;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 24px 16px;
+    overflow-y: auto;
+  }
+  .report-overlay.show { display: flex; }
+  .report-modal {
+    background: white;
+    width: 100%;
+    max-width: 800px;
+    border-top: 4px solid var(--sigma-blue);
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+  }
+  .report-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--section-bg);
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .report-modal-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--sigma-blue);
+    letter-spacing: -0.01em;
+  }
+  .report-modal-actions { display: flex; gap: 8px; align-items: center; }
+
+  /* LOADING */
+  .report-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    gap: 16px;
+  }
+  .report-spinner {
+    width: 36px; height: 36px;
+    border: 3px solid var(--border);
+    border-top-color: var(--sigma-blue);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  #reportLoadingMsg { font-size: 13px; color: var(--muted); font-style: italic; }
+
+  /* LANG TABS */
+  .report-lang-tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 2px solid var(--border);
+    padding: 0 20px;
+    background: var(--section-bg);
+  }
+  .report-lang-btn {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    padding: 10px 18px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .report-lang-btn.active { color: var(--sigma-blue); border-bottom-color: var(--sigma-blue); }
+  .report-lang-btn:hover { color: var(--sigma-blue); }
+
+  /* SECTIONS */
+  .report-content { flex: 1; display: flex; flex-direction: column; }
+  .report-sections { padding: 16px 20px; display: flex; flex-direction: column; gap: 12px; }
+  .report-section { display: flex; flex-direction: column; gap: 6px; }
+  .report-section-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--sigma-blue);
+    border-left: 3px solid var(--sigma-blue);
+    padding: 4px 10px;
+    background: var(--accent);
+  }
+  .report-section-label[data-type="obrona"]       { border-left-color: #c62828; color: #c62828; background: #fff5f5; }
+  .report-section-label[data-type="przełączanie"] { border-left-color: #6a1b9a; color: #6a1b9a; background: #f9f0ff; }
+  .report-section-label[data-type="motoryka"]     { border-left-color: #0277bd; color: #0277bd; background: #f0f8ff; }
+  .report-section-label[data-type="technika"]     { border-left-color: #003f8a; color: #003f8a; background: var(--accent); }
+  .report-textarea {
+    width: 100%;
+    min-height: 90px;
+    border: 1.5px solid var(--border);
+    border-radius: 2px;
+    background: var(--answer-bg);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--text);
+    padding: 10px 12px;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .report-textarea:focus { border-color: var(--sigma-blue); background: var(--answer-bg); }
+  .report-textarea-lg { min-height: 120px; }
+</style>
+
+<script>
+// ══════════════════════════════════════════════════════
+// REPORT GENERATOR
+// ══════════════════════════════════════════════════════
+
+const POSITION_LABELS = {
+  gk: 'Goalkeeper (GK)',
+  cb: 'Centre-back (CB)',
+  lb: 'Full-back (LB/RB)',
+  cm: 'Central midfielder (CM / DM)',
+  cam: 'Attacking midfielder (CAM / no.10)',
+  winger: 'Winger (LW/RW)',
+  cf: 'Centre-forward (ST/CF)'
+};
+
+const SIGMA_REQUIREMENTS = {
+  gk: 'Height 188+ cm required. Key attributes: shot-stopping technique, decision-making on when to come off the line, footwork and ability to play under pressure (Sigma plays high pressing, GK must be comfortable as an extra man in build-up), commanding in aerial duels, psychological resilience.',
+  cb: 'Pace is the top priority (max speed 32.5+ km/h) - Sigma plays a high defensive line. Key attributes: 1v1 defending, reading the game and anticipation, aerial duels (both ways), composure in possession under pressure, ability to play out from the back, leadership and organisation. Physical: intensity in duels, aggressiveness.',
+  lb: 'Most physically demanding position in Sigma\'s system (distance 11,500m, 250 accelerations, max speed 33+ km/h). Key attributes: crossing quality, ability to combine with the winger (overlapping and underlapping runs), 1v1 defending against opposing wingers, reading the game, stamina for repeated runs in both directions. Must be aggressive and not afraid of physical contact.',
+  cm: 'Key attributes: reading the game and intercepting, composure on the ball under pressure (short and long passing), covering space in front of the defensive line, work rate (11,500m distance), ability to press immediately after losing the ball, organizational skills. Also needs to provide offensive support as second wave.',
+  cam: 'Key attributes: creativity and vision, final and pre-final passes (key metric), dribbling in the final third, finishing ability, quick decision-making under pressure, constant availability for teammates, movement between the lines. Must also press actively and be disciplined defensively in the defensive block.',
+  winger: 'Key attributes: dribbling quality and courage in 1v1, crossing quality, finishing with both feet, pressing activity (responsible tracking back), combination play with full-back and central midfielder, constant movement and availability off the ball. Physical: speed (33+ km/h), explosiveness, stamina for 90 minutes.',
+  cf: 'Key attributes: finishing variety (both feet, head), movement and positioning in the box (blind runs), ability to play with back to goal, pressing of opposing centre-backs and goalkeeper, aerial duels. Physical: explosiveness, strength in duels, repeated sprints. Mental: confidence, desire for the ball, hunger for goals.'
+};
+
+const LOADING_MESSAGES = [
+  'Analizuję notatki...',
+  'Przeglądam wymagania pozycji...',
+  'Układam technikę i taktykę...',
+  'Oceniam fazę obronną i ofensywną...',
+  'Finalizuję raport...'
+];
+
+function getSheetData(pos) {
+  const data = {};
+  document.querySelectorAll(`[data-key^="${pos}_"]`).forEach(el => {
+    const key = el.dataset.key.replace(pos + '_', '');
+    if (el.value && el.value.trim() && el.value !== '—') {
+      data[key] = el.value.trim();
+    }
+  });
+  return data;
+}
+
+function buildPrompt(pos, data, brudnopis) {
+  const posLabel = POSITION_LABELS[pos] || pos;
+  const requirements = SIGMA_REQUIREMENTS[pos] || '';
+
+  const basicFields = ['name','dob','height','nat','club','foot','agent','match'];
+  const basicLines = basicFields
+    .filter(k => data[k])
+    .map(k => `${k}: ${data[k]}`).join('\n');
+
+  // Collect filled Q&A answers (skip basic fields and meta fields)
+  const skipKeys = new Set([...basicFields, 'scout','rec','grade','pot','summary','tm']);
+  const qaLines = Object.entries(data)
+    .filter(([k]) => !skipKeys.has(k))
+    .map(([k, v]) => `- ${v}`)
+    .join('\n');
+
+  return `You are an expert football scout working for SK Sigma Olomouc (Czech Republic, FNL / top league level).
+
+Your job: write a scouting report based on the scout's raw notes below. The scout writes in Polish. You must produce the report in BOTH Polish and English.
+
+POSITION OBSERVED: ${posLabel}
+
+SIGMA OLOMOUC PROFILE REQUIREMENTS FOR THIS POSITION:
+${requirements}
+
+PLAYER BASIC DATA:
+${basicLines || '(not provided)'}
+
+SCOUT'S RAW NOTES (main source - brudnopis):
+${brudnopis || '(empty)'}
+
+ADDITIONAL NOTES FROM FORM FIELDS:
+${qaLines || '(none)'}
+
+SUMMARY / OVERALL IMPRESSION (if provided):
+${data.summary || '(not provided)'}
+
+RECOMMENDATION: ${data.rec || '?'} | GRADE: ${data.grade || '?'} | POTENTIAL: ${data.pot || '?'}
+
+---
+
+STYLE INSTRUCTIONS (follow these strictly):
+- Write like a professional scout, not like an AI. Short, direct sentences. No filler. No adjective stacking.
+- English must be simple scouting English - plain, clear, no sophisticated vocabulary. If you use a slightly unusual word, that is acceptable but keep it rare.
+- You may write "we" when referring to Sigma's standards (e.g. "what we expect", "our profile", "our style of play").
+- In the Defence & Attack section, split clearly with "D:" and "A:" on separate lines.
+- The Final assessment section must start with: match date and result (from the notes), then the player's surname, then your summary. Example: "19.03.2026, Raków Częstochowa - Fiorentina 1:2. Ameyaw operates between positions..."
+- Do not be afraid of direct negative assessments. Examples of good tone: "This is not a technical problem - it is a character problem." / "He does not fit our profile at either position." / "In defence, the mentality is clearly missing."
+- Each section: 3-6 sentences. Focused. No repetition between sections.
+- Polish version mirrors the English exactly in content - it is a translation for the scout's own reference, not a rewrite.
+
+OUTPUT FORMAT - respond with valid JSON only, no markdown, no extra text:
+{
+  "en": {
+    "technika": "...",
+    "obrona": "...",
+    "pressing": "...",
+    "motoryka": "...",
+    "summary": "..."
+  },
+  "pl": {
+    "technika": "...",
+    "obrona": "...",
+    "pressing": "...",
+    "motoryka": "...",
+    "summary": "..."
+  }
+}`;
+}
+
+let reportLoadingInterval = null;
+
+function generateReport(pos) {
+  const brudnopis = (function() {
+    loadObsSlots();
+    if (obsSlots.A.pos === pos && obsSlots.A.notes.trim()) return obsSlots.A.notes;
+    if (obsSlots.B.pos === pos && obsSlots.B.notes.trim()) return obsSlots.B.notes;
+    return obsSlots.A.notes || obsSlots.B.notes || '';
+  })();
+  const data = getSheetData(pos);
+
+  if (!brudnopis.trim() && !data.summary && Object.keys(data).length < 3) {
+    alert('Brak notatek. Wejdź w Tryb obserwacji, wpisz obserwacje, a następnie wróć i kliknij Kopiuj do Claudea.');
+    return;
+  }
+
+  const posLabel = POSITION_LABELS[pos] || pos;
+  const requirements = SIGMA_REQUIREMENTS[pos] || '';
+  const basicFields = ['name','dob','height','nat','club','foot','agent','match'];
+  const basicLines = basicFields.filter(k => data[k]).map(k => `${k}: ${data[k]}`).join('\n');
+  const skipKeys = new Set([...basicFields,'scout','rec','grade','pot','summary','tm']);
+  const qaLines = Object.entries(data).filter(([k]) => !skipKeys.has(k)).map(([k,v]) => `- ${v}`).join('\n');
+
+  const fullText =
+`Jesteś skautem SK Sigma Ołomuniec. Na podstawie poniższych danych i notatek napisz raport skautingowy zgodny z oficjalnym wzorem Sigmy.
+
+WZÓR RAPORTU - cztery sekcje plus ocena końcowa, każda najpierw PO POLSKU, bezpośrednio pod nią TO SAMO po angielsku:
+1. Technika i taktyka / Technika & Taktika
+2. Obrona i atak / Obrona & Útok - zacznij od "D:" (defensywa), potem "A:" (atak)
+3. Przełączanie i naciskanie / Přepínání & Pressing
+4. Umiejętności motoryczne i charakter / Motorika & Charakter
+5. Ocena końcowa / Finální hodnocení - zacznij od daty i wyniku meczu, potem nazwisko, potem treść
+
+ZASADY STYLU:
+- Pisz jak doświadczony skaut, nie jak AI. Krótkie, bezpośrednie zdania. Żadnych wypełniaczy.
+- Angielski: prosty scouting English, żadnych wyszukanych słów
+- Możesz pisać "we" odnosząc się do standardów Sigmy ("what we expect", "our profile")
+- Nie bój się trudnych ocen. Dobre przykłady: "This is not a technical problem - it is a character problem." / "He does not fit our profile."
+- Każda sekcja: 3-6 zdań, skupiona, bez powtórzeń między sekcjami
+- NIE używaj długiego myślnika "—", używaj krótkiego "-"
+- Wersja polska i angielska muszą być identyczne w treści
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+POZYCJA: ${posLabel}
+
+WYMAGANIA SIGMY DLA TEJ POZYCJI:
+${requirements}
+
+DANE ZAWODNIKA:
+${basicLines || '(brak)'}
+
+NOTATKI Z TRYBU OBSERWACJI (główne źródło):
+${brudnopis || '(brak)'}
+
+DODATKOWE NOTATKI Z PÓL FORMULARZA:
+${qaLines || '(brak)'}
+
+OGÓLNA OCENA / PODSUMOWANIE:
+${data.summary || '(brak)'}
+
+ZALECENIE: ${data.rec || '?'} | OCENA: ${data.grade || '?'} | POTENCJAŁ: ${data.pot || '?'}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
+
+  navigator.clipboard.writeText(fullText).then(() => {
+    // Visual feedback on the button
+    const btn = document.querySelector(`#${pos} .btn-generate`);
+    if (btn) {
+      const orig = btn.innerHTML;
+      btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Skopiowano — wklej i wyślij`;
+      btn.style.background = '#1b5e20';
+      setTimeout(() => { btn.innerHTML = orig; btn.style.background = ''; }, 3000);
+    }
+  }).catch(() => {
+    // Fallback: show in textarea inside report modal
+    document.getElementById('reportModal').classList.add('show');
+    document.getElementById('reportLoading').style.display = 'none';
+    document.getElementById('reportContent').style.display = 'flex';
+    document.getElementById('reportSectionsEn').style.display = 'flex';
+    document.getElementById('reportSectionsPl').style.display = 'none';
+    document.getElementById('copyEnBtn').style.display = '';
+    document.getElementById('copyPlBtn').style.display = 'none';
+    document.getElementById('rep_en_technika').value = fullText;
+    document.getElementById('rep_en_obrona').value = '';
+    document.getElementById('rep_en_pressing').value = '';
+    document.getElementById('rep_en_motoryka').value = '';
+    document.getElementById('rep_en_summary').value = '';
+  });
+}
+
+function switchLang(lang, btn) {
+  document.querySelectorAll('.report-lang-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('reportSectionsEn').style.display = lang === 'en' ? 'flex' : 'none';
+  document.getElementById('reportSectionsPl').style.display = lang === 'pl' ? 'flex' : 'none';
+}
+
+function copyReportLang(lang) {
+  const sections = lang === 'en'
+    ? ['rep_en_technika','rep_en_obrona','rep_en_pressing','rep_en_motoryka','rep_en_summary']
+    : ['rep_pl_technika','rep_pl_obrona','rep_pl_pressing','rep_pl_motoryka','rep_pl_summary'];
+  const headers = lang === 'en'
+    ? ['Technika & Taktika','Obrona & Útok','Přepínání & Pressing','Motorika & Charakter','Finální hodnocení']
+    : ['Technika i taktyka','Obrona i atak','Przełączanie i naciskanie','Umiejętności motoryczne i charakter','Ocena końcowa'];
+
+  let out = '';
+  sections.forEach((id, i) => {
+    const val = (document.getElementById(id) || {}).value || '';
+    if (val.trim()) out += headers[i] + '\n' + val.trim() + '\n\n';
+  });
+
+  navigator.clipboard.writeText(out.trim()).then(() => {
+    const btn = lang === 'en'
+      ? document.getElementById('copyEnBtn')
+      : document.getElementById('copyPlBtn');
+    const orig = btn.textContent;
+    btn.textContent = '✓ Skopiowano';
+    setTimeout(() => btn.textContent = orig, 2000);
+  }).catch(() => {
+    alert('Kopiowanie nie powiodło się. Zaznacz tekst ręcznie.');
+  });
+}
+
+function closeReport() {
+  clearInterval(reportLoadingInterval);
+  document.getElementById('reportModal').classList.remove('show');
+}
+
+document.getElementById('reportModal').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeReport();
+});
+</script>
+<!-- ======================== TRYB OBSERWACJI ======================== -->
+<div class="obs-overlay" id="obsOverlay">
+
+  <div class="obs-header">
+    <div class="obs-header-left">
+      <div class="obs-logo">SK Sigma<br>Ołomuniec</div>
+      <div class="obs-title-wrap">
+        <span class="obs-mode-label">Tryb obserwacji</span>
+        <span class="obs-match" id="obsMatchInfo"></span>
+      </div>
+    </div>
+    <div class="obs-header-right">
+      <span class="obs-saved-ind" id="obsSavedInd">✓ Zapisano</span>
+      <button class="obs-clear-btn" onclick="clearObsPanel()">Wyczyść</button>
+      <button class="obs-back-btn" onclick="exitObserveMode()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Wróć do formularza
+      </button>
+    </div>
+  </div>
+
+  <div class="obs-dual-body">
+
+    <!-- ── PANEL A ── -->
+    <div class="obs-panel" id="obsPanelA">
+      <div class="obs-panel-header">
+        <span class="obs-panel-letter">A</span>
+        <input type="text" class="obs-panel-name" id="obsNameA" placeholder="Imię i nazwisko..." oninput="updateSlotName('A', this.value)">
+        <select class="obs-panel-pos" id="obsPosA" onchange="updateSlotPos('A', this.value)">
+          <option value="gk">GK · Bramkarz</option>
+          <option value="cb">CB · Śr. obrońca</option>
+          <option value="lb">LB/RB · Boczny obrońca</option>
+          <option value="cm">CM · Śr. pomocnik</option>
+          <option value="cam">CAM · Of. pomocnik</option>
+          <option value="winger" selected>LW/RW · Skrzydłowy</option>
+          <option value="cf">ST/CF · Napastnik</option>
+        </select>
+      </div>
+      <div class="obs-panel-body">
+        <div class="obs-panel-cheat" id="obsCheatA"></div>
+        <div class="obs-panel-notes">
+          <textarea class="obs-textarea" id="obsNotesA"
+            placeholder="Notatki z meczu — pisz swobodnie..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="obs-panel-divider"></div>
+
+    <!-- ── PANEL B ── -->
+    <div class="obs-panel" id="obsPanelB">
+      <div class="obs-panel-header">
+        <span class="obs-panel-letter">B</span>
+        <input type="text" class="obs-panel-name" id="obsNameB" placeholder="Imię i nazwisko..." oninput="updateSlotName('B', this.value)">
+        <select class="obs-panel-pos" id="obsPosB" onchange="updateSlotPos('B', this.value)">
+          <option value="gk">GK · Bramkarz</option>
+          <option value="cb">CB · Śr. obrońca</option>
+          <option value="lb">LB/RB · Boczny obrońca</option>
+          <option value="cm">CM · Śr. pomocnik</option>
+          <option value="cam">CAM · Of. pomocnik</option>
+          <option value="winger">LW/RW · Skrzydłowy</option>
+          <option value="cf">ST/CF · Napastnik</option>
+        </select>
+      </div>
+      <div class="obs-panel-body">
+        <div class="obs-panel-cheat" id="obsCheatB"></div>
+        <div class="obs-panel-notes">
+          <textarea class="obs-textarea" id="obsNotesB"
+            placeholder="Notatki z meczu — pisz swobodnie..."></textarea>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<style>
+  /* ─────────────────────────────────────────────────────
+     OBSERVE BUTTON (desktop hover)
+  ───────────────────────────────────────────────────── */
+  @media (min-width: 700px) {
+    .btn-observe:hover { background: #1b5e20; color: white; }
+  }
+
+  /* ─────────────────────────────────────────────────────
+     OBSERVATION MODE OVERLAY
+  ───────────────────────────────────────────────────── */
+  .obs-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 3000;
+    background: #0d1b2a;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .obs-overlay.show {
+    display: flex;
+  }
+
+  /* header */
+  .obs-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background: #0a1520;
+    border-bottom: 2px solid #1a3060;
+    gap: 12px;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+  }
+  .obs-header-left { display: flex; align-items: center; gap: 14px; }
+  .obs-logo {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #5b8dee;
+    line-height: 1.6;
+    border: 1px solid #1a3060;
+    padding: 5px 8px;
+  }
+  .obs-title-wrap { display: flex; flex-direction: column; gap: 1px; }
+  .obs-mode-label {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #2ecc71;
+  }
+  .obs-match {
+    font-size: 11px;
+    color: #8899bb;
+    font-style: italic;
+    max-width: 240px;
+  }
+
+  /* ── A/B DUAL PANEL BODY ── */
+  .obs-dual-body {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    gap: 0;
+  }
+  .obs-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-width: 0;
+  }
+  .obs-panel-divider {
+    width: 2px;
+    background: #1a3060;
+    flex-shrink: 0;
+  }
+
+  /* Panel header */
+  .obs-panel-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 14px;
+    background: #0c1828;
+    border-bottom: 1px solid #1a3060;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+  }
+  .obs-panel-letter {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 18px;
+    font-weight: 700;
+    color: #2ecc71;
+    line-height: 1;
+    flex-shrink: 0;
+    width: 20px;
+  }
+  .obs-panel-name {
+    flex: 1;
+    min-width: 100px;
+    background: transparent;
+    border: none;
+    border-bottom: 1.5px solid #1a3060;
+    color: #e0eaff;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 3px 0;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .obs-panel-name:focus { border-bottom-color: #2ecc71; }
+  .obs-panel-name::placeholder { color: #2a3d55; font-weight: 400; font-size: 12px; }
+  .obs-panel-pos {
+    background: transparent;
+    border: 1px solid #1a3060;
+    color: #6688aa;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 11px;
+    padding: 3px 8px;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.15s;
+    flex-shrink: 0;
+  }
+  .obs-panel-pos:focus { border-color: #2ecc71; color: #c8e8c8; }
+
+  /* Panel body: cheat + notes side by side */
+  .obs-panel-body {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
+  .obs-panel-cheat {
+    width: 42%;
+    flex-shrink: 0;
+    overflow-y: auto;
+    border-right: 1px solid #1a3060;
+    padding: 12px 14px 24px;
+    background: #0d1b2a;
+  }
+  .obs-panel-notes {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: #0a1520;
+  }
+
+  /* Mobile: stack panels vertically */
+  @media (max-width: 900px) {
+    .obs-dual-body { flex-direction: column; }
+    .obs-panel-divider { width: 100%; height: 2px; }
+    .obs-panel-body { flex-direction: column; }
+    .obs-panel-cheat { width: 100%; border-right: none; border-bottom: 1px solid #1a3060; max-height: 35vh; }
+    .obs-panel-notes { min-height: 30vh; }
+  }
+  .obs-back-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    border: 1.5px solid #1a3060;
+    color: #8899bb;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 7px 13px;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .obs-back-btn:hover { border-color: #5b8dee; color: #5b8dee; }
+  .obs-clear-btn {
+    display: flex; align-items: center; gap: 6px;
+    background: transparent; border: 1.5px solid #7a2020;
+    color: #e55353; font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.05em;
+    text-transform: uppercase; padding: 7px 13px;
+    cursor: pointer; transition: all 0.15s; white-space: nowrap;
+  }
+  .obs-clear-btn:hover { background: #7a2020; color: white; border-color: #7a2020; }
+
+  /* ── CHEAT SHEET CONTENT (shared) ── */
+  .obs-pos-badge {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px; font-weight: 500; letter-spacing: 0.16em;
+    text-transform: uppercase; color: #2ecc71; margin-bottom: 12px; display: block;
+  }
+  .obs-group { margin-bottom: 14px; }
+  .obs-group-title {
+    font-size: 9px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+    padding: 3px 7px; margin-bottom: 6px; border-left: 3px solid; display: block;
+  }
+  .obs-group[data-type="technika"]      .obs-group-title { color: #5b8dee; border-color: #5b8dee; background: rgba(91,141,238,0.08); }
+  .obs-group[data-type="obrona"]        .obs-group-title { color: #e55353; border-color: #e55353; background: rgba(229,83,83,0.08); }
+  .obs-group[data-type="atak"]          .obs-group-title { color: #2ecc71; border-color: #2ecc71; background: rgba(46,204,113,0.08); }
+  .obs-group[data-type="przełączanie"]  .obs-group-title { color: #bb86fc; border-color: #bb86fc; background: rgba(187,134,252,0.08); }
+  .obs-group[data-type="motoryka"]      .obs-group-title { color: #56ccf2; border-color: #56ccf2; background: rgba(86,204,242,0.08); }
+  .obs-group[data-type="charakter"]     .obs-group-title { color: #f9a825; border-color: #f9a825; background: rgba(249,168,37,0.08); }
+  .obs-bullets { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 4px; }
+  .obs-bullets li { font-size: 11.5px; color: #c8d8f0; line-height: 1.4; padding-left: 12px; position: relative; }
+  .obs-bullets li::before { content: '›'; position: absolute; left: 0; top: 0; font-size: 13px; line-height: 1.35; }
+  .obs-group[data-type="technika"]     .obs-bullets li::before { color: #5b8dee; }
+  .obs-group[data-type="obrona"]       .obs-bullets li::before { color: #e55353; }
+  .obs-group[data-type="atak"]         .obs-bullets li::before { color: #2ecc71; }
+  .obs-group[data-type="przełączanie"] .obs-bullets li::before { color: #bb86fc; }
+  .obs-group[data-type="motoryka"]     .obs-bullets li::before { color: #56ccf2; }
+  .obs-group[data-type="charakter"]    .obs-bullets li::before { color: #f9a825; }
+  .obs-bullets li strong { color: white; font-weight: 600; }
+  .obs-kondycja {
+    margin-top: 14px; padding: 8px 10px; background: rgba(255,255,255,0.04);
+    border: 1px solid #1a3060; font-size: 10px; color: #6688aa; line-height: 1.55;
+  }
+  .obs-kondycja strong { color: #8899bb; display: block; margin-bottom: 2px; font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase; }
+
+  /* ── TEXTAREA ── */
+  .obs-textarea {
+    flex: 1; width: 100%; border: none; background: transparent;
+    font-family: 'IBM Plex Sans', sans-serif; font-size: 14px;
+    line-height: 1.75; color: #e0eaff; padding: 14px 16px;
+    resize: none; outline: none; caret-color: #2ecc71;
+  }
+  .obs-textarea::placeholder { color: #2a3d55; font-style: italic; font-size: 12px; }
+
+  /* ── SAVE INDICATOR in header ── */
+  .obs-saved-ind {
+    font-size: 10px; color: #2ecc71; font-weight: 600;
+    letter-spacing: 0.06em; opacity: 0; transition: opacity 0.4s;
+  }
+  .obs-saved-ind.show { opacity: 1; }
+
+  /* Mobile */
+  @media (max-width: 900px) {
+    .obs-textarea { font-size: 16px; }
+  }
+</style>
+
+<script>
+// ══════════════════════════════════════════════════════
+// TRYB OBSERWACJI
+// ══════════════════════════════════════════════════════
+
+const CHEAT_SHEETS = {
+  gk: {
+    pos: 'Bramkarz (GK)',
+    groups: [
+      { type: 'technika', label: 'Technika', items: [
+        '<strong>Łapanie</strong> — pewność, eliminacja odbić, trzymanie przy kontakcie',
+        '<strong>Gra nogami krótka</strong> — precyzja pod presją, udział w rozgrywce',
+        '<strong>Gra nogami długa</strong> — jakość, świadomy wybór rozwiązania',
+        '<strong>Ustawianie</strong> — kąt, pozycja przy dośrodkowaniach'
+      ]},
+      { type: 'obrona', label: 'Obrona', items: [
+        '<strong>Interwencje</strong> — reflex, stop nisko/wysoko, strzał z dystansu',
+        '<strong>Wyjścia powietrzne</strong> — zdecydowanie, łapanie vs pięściowanie',
+        '<strong>1v1</strong> — odwaga i szybkość wybiegania sam na sam',
+        '<strong>Organizacja defensywy</strong> — komunikacja z linią obronną'
+      ]},
+      { type: 'przełączanie', label: 'Przełączanie', items: [
+        'Tempo wznowienia gry po interwencji',
+        'Czy próbuje uruchomić kontratak?',
+        'Reakcja po błędzie lub straconej bramce'
+      ]},
+      { type: 'motoryka', label: 'Motoryka', items: [
+        'Wzrost (wymaganie <strong>188+ cm</strong>)',
+        'Eksplozywność przy skokach i przesunięciach',
+        'Prędkość reakcji na małej przestrzeni'
+      ]},
+      { type: 'charakter', label: 'Charakter', items: [
+        'Pewność przy każdej interwencji — czy są wahania?',
+        'Koncentracja przez całe 90 minut',
+        'Widoczne przywództwo — kieruje obroną głosem?'
+      ]}
+    ],
+    kondycja: 'Wzrost 188+ cm · Wysoka dynamika'
+  },
+  cb: {
+    pos: 'Środkowy obrońca (CB)',
+    groups: [
+      { type: 'technika', label: 'Technika i rozgrywka', items: [
+        '<strong>Podania krótkie</strong> — precyzja pod presją, tempo rozgrywki',
+        '<strong>Podania długie</strong> — zmiana gry, diagonale, jakość przerzutów',
+        '<strong>Pierwsze przyjęcie</strong> — bezpieczne z zabezpieczeniem czy ryzykowne?',
+        '<strong>Gra pozycyjna</strong> — ustawienie linii przy zmianach gry rywala'
+      ]},
+      { type: 'obrona', label: 'Obrona', items: [
+        '<strong>Krycie 1v1</strong> — eliminuje rywala? Wyczucie ślizgu/wyparcia?',
+        '<strong>Czytanie gry</strong> — ile przechwytuje zanim sytuacja jest groźna?',
+        '<strong>Pojedynki powietrzne</strong> — dominuje w ataku i obronie?',
+        '<strong>Agresywność</strong> — nie boi się kontaktu, ślizgów, pojedynków ciałem?',
+        '<strong>Szybkość za plecy</strong> — dogania wbiegającego rywala?'
+      ]},
+      { type: 'atak', label: 'Atak / rozgrywka do przodu', items: [
+        'Wychodzi z piłką do środkowego pola?',
+        'Zagrożenie przy SFG ofensywnych (głowa)?'
+      ]},
+      { type: 'przełączanie', label: 'Przełączanie', items: [
+        'Reakcja na stratę — natychmiast dochodzi czy cofa się?',
+        'Udział w pressing drużynowy przy utracie posiadania',
+        'Korekta ustawienia przy zmianie kierunku gry rywala'
+      ]},
+      { type: 'motoryka', label: 'Motoryka', items: [
+        '<strong>Prędkość w sprintach obronnych</strong> — wymaganie <strong>32,5+ km/h</strong>',
+        'Budowa fizyczna — wzrost, masa, odporność na presję',
+        'Utrzymuje intensywność przez całe 90 minut?'
+      ]},
+      { type: 'charakter', label: 'Charakter', items: [
+        'Komunikacja — głośno kieruje obroną?',
+        'Spokój po błędzie — koncentracja nie spada?',
+        'Przywództwo — bierze odpowiedzialność w kluczowych momentach?'
+      ]}
+    ],
+    kondycja: 'Dystans 10 000m · Maks. prędkość 32,5+ km/h · Player load 1000'
+  },
+  lb: {
+    pos: 'Boczny obrońca (LB/RB)',
+    groups: [
+      { type: 'technika', label: 'Technika', items: [
+        '<strong>Dośrodkowania</strong> — ile, z jakich pozycji, jakość (po ziemi / w powietrzu)?',
+        '<strong>Drybling 1v1 na skrzydle</strong> — próbuje, skuteczność?',
+        '<strong>Overlap / underlap</strong> — obieganie skrzydłowego lub wbieganie do środka?',
+        '<strong>Podania</strong> — precyzja do skrzydłowego i środkowego pomocnika'
+      ]},
+      { type: 'obrona', label: 'Obrona', items: [
+        '<strong>Krycie 1v1 skrzydłowego</strong> — daje się zwodzić? Właściwy dystans?',
+        '<strong>Czytanie gry</strong> — ile razy przechwycił/wybił wcześniej?',
+        '<strong>Powroty</strong> — jak szybko wraca po wyjściu do ataku?',
+        '<strong>Kontakt fizyczny</strong> — nie boi się, czy unika?',
+        '<strong>Komunikacja</strong> — zabezpieczenia, przejęcia przy SFG'
+      ]},
+      { type: 'atak', label: 'Atak', items: [
+        'Tworzy przewagę 2v1 ze skrzydłowym?',
+        'Wbiega do pola karnego na drugiej fali?'
+      ]},
+      { type: 'przełączanie', label: 'Przełączanie', items: [
+        'Powrót po utracie piłki wysoko — jak szybko?',
+        'Pressing bocznego obrońcy/skrzydłowego rywala',
+        'Przełączenie obrona→atak przy odbiorze piłki'
+      ]},
+      { type: 'motoryka', label: 'Motoryka', items: [
+        '<strong>Prędkość wzdłuż bocznej linii</strong> — wymaganie <strong>33+ km/h</strong>',
+        '<strong>Wytrzymałość</strong> — 11 500 m, 250 akceleracji, intensywność do końca',
+        'Eksplozywność przy akceleracji i zmianie kierunku'
+      ]},
+      { type: 'charakter', label: 'Charakter', items: [
+        'Determinacja po błędzie lub gdy skrzydłowy go mija',
+        'Agresywność w starciach fizycznych'
+      ]}
+    ],
+    kondycja: 'Dystans 11 500m · HIR 800m · 250 akceleracji · Maks. 33+ km/h · Player load 1200'
+  },
+  cm: {
+    pos: 'Środkowy pomocnik (CM / DM)',
+    groups: [
+      { type: 'technika', label: 'Technika', items: [
+        '<strong>Podania krótkie</strong> — precyzja pod presją, tempo gry',
+        '<strong>Podania długie / przerzuty</strong> — zmiana punktu gry, skuteczność',
+        '<strong>Podania prostopadłe</strong> — ile między linie lub za linię obrony?',
+        '<strong>Pierwsze przyjęcie</strong> — utrzymuje piłkę gdy rywal atakuje?',
+        '<strong>SFG</strong> — rzuty wolne, rożne, precyzja, pomysł'
+      ]},
+      { type: 'obrona', label: 'Obrona', items: [
+        '<strong>Czytanie gry</strong> — ile przechwytuje, ile odcina linii podania?',
+        '<strong>Szybkość dochodzenia</strong> — atakuje rywala natychmiast po stracie?',
+        '<strong>Gra pozycyjna</strong> — zabezpiecza przestrzeń przed linią obronną?',
+        '<strong>Pojedynki fizyczne</strong> — przebija się przez rywali w środku pola?'
+      ]},
+      { type: 'atak', label: 'Atak', items: [
+        'Orientacja — ciągle szuka wolnych stref, oferuje się do podań?',
+        'Wsparcie ofensywne — włącza się jako druga fala?',
+        'Zagrożenie strzałem z dystansu?'
+      ]},
+      { type: 'przełączanie', label: 'Przełączanie', items: [
+        'Pressing po stracie — natychmiast czy z opóźnieniem?',
+        'Koordynuje pressing środka pola — kieruje partnerami?',
+        'Odbudowuje ustawienie po ofensywnym wyjściu?'
+      ]},
+      { type: 'motoryka', label: 'Motoryka', items: [
+        'Wytrzymałość — wysoki volume gry przez 90 minut?',
+        '<strong>Dystans 11 500m · Maks. 32+ km/h</strong>',
+        'Siła fizyczna w starciach w środku pola'
+      ]},
+      { type: 'charakter', label: 'Charakter', items: [
+        'Szybkość decyzji — prosta i szybka gra czy wahania?',
+        'Zdolności organizacyjne — "motor" środka pola?'
+      ]}
+    ],
+    kondycja: 'Dystans 11 500m · HIR 800m · Maks. 32+ km/h · Player load 1200'
+  },
+  cam: {
+    pos: 'Ofensywny pomocnik (CAM / nr 10)',
+    groups: [
+      { type: 'technika', label: 'Technika', items: [
+        '<strong>Ostatnie podanie</strong> — ile podań do sytuacji bramkowej, jakość?',
+        '<strong>Drybling 1v1</strong> — skutecznie mija w finalnej tercji?',
+        '<strong>Wykończenie</strong> — strzał z dystansu i wewnątrz pola karnego',
+        '<strong>Kreatywność</strong> — widzi rozwiązania których inni nie widzą?',
+        '<strong>SFG</strong> — rzuty wolne, rożne, jakość i pomysłowość'
+      ]},
+      { type: 'obrona', label: 'Obrona', items: [
+        '<strong>Pressing</strong> — aktywnie włącza się jako 1. lub 2. zawodnik?',
+        '<strong>Blok obronny</strong> — zdyscyplinowane ustawienie, zamyka środek?',
+        'Czytanie gry — przechwytuje kluczowe podania rywala?'
+      ]},
+      { type: 'atak', label: 'Atak', items: [
+        'Ruch między liniami — ciągle dostępny do podania?',
+        'Uzupełnienie do pola karnego — wyczucie czasu wbiegań?',
+        'Kombinacje z napastnikiem i skrzydłowymi'
+      ]},
+      { type: 'przełączanie', label: 'Przełączanie', items: [
+        'Powrót po utracie piłki wysoko — jak szybko?',
+        'Przejście twórca gry → presser — naturalne?',
+        'Natychmiast oferuje się przy odzysku piłki?'
+      ]},
+      { type: 'motoryka', label: 'Motoryka', items: [
+        'Dynamika na małej przestrzeni — zmiana kierunku, uwolnienie',
+        '<strong>Dystans 11 500m · HIR 900m · Maks. 32+ km/h</strong>',
+        'Wytrzymałość — aktywny w obu fazach przez 90 minut?'
+      ]},
+      { type: 'charakter', label: 'Charakter', items: [
+        'Szybkość decyzji pod presją',
+        'Odwaga — bierze piłkę w trudnych momentach?',
+        'Wpływ na grę drużyny — drużyna rośnie gdy jest aktywny?'
+      ]}
+    ],
+    kondycja: 'Dystans 11 500m · HIR 900m · 200 akceleracji · Maks. 32+ km/h · Player load 1100'
+  },
+  winger: {
+    pos: 'Skrzydłowy napastnik (LW/RW)',
+    groups: [
+      { type: 'technika', label: 'Technika', items: [
+        '<strong>Drybling 1v1</strong> — ile prób, skuteczność, jakie techniki?',
+        '<strong>Dośrodkowania</strong> — ile, z jakich pozycji, jakość?',
+        '<strong>Wykończenie</strong> — strzał lewą i prawą nogą, różnorodność',
+        '<strong>Kombinacje</strong> — jeden dotyk z bocznym obrońcą / pomocnikiem',
+        '<strong>Praca z przestrzenią</strong> — rozciąga obronę, szuka przestrzeni za linią?'
+      ]},
+      { type: 'obrona', label: 'Obrona', items: [
+        '<strong>Pressing bocznego obrońcy rywala</strong> — blisko, skutecznie odcina?',
+        '<strong>Powroty defensywne</strong> — jak szybko, czy wspiera bocznego obrońcę?',
+        '<strong>Blok obronny</strong> — wraca i ustawia się czy pozostaje wysoko?',
+        'Współdziałanie obronne z bocznym obrońcą własnej drużyny'
+      ]},
+      { type: 'atak', label: 'Atak', items: [
+        'Uzupełnienie do strefy finalnej — wyczucie czasu wbiegań?',
+        'Ruch bez piłki — oferta gdy piłka po drugiej stronie?',
+        '<strong>Produktywność</strong> — gole, asysty, stworzone sytuacje'
+      ]},
+      { type: 'przełączanie', label: 'Przełączanie', items: [
+        'Na utratę piłki — natychmiast dochodzi czy cofa się?',
+        'Na odzysk — natychmiast wychodzi do kontrataku?',
+        'Blok niski — dyscyplina czy zostaje wysoko?'
+      ]},
+      { type: 'motoryka', label: 'Motoryka', items: [
+        '<strong>Szybkość</strong> — odrywa się od obrońcy? Wymaganie <strong>33+ km/h</strong>',
+        '<strong>Eksplozywność</strong> — akceleracja przy 1. kroku, zmiana kierunku',
+        'Wytrzymałość — intensywność sprintów do końca 2. połowy?'
+      ]},
+      { type: 'charakter', label: 'Charakter', items: [
+        '<strong>Odwaga 1v1</strong> — szuka kontaktu, podejmuje ryzyko?',
+        'Reakcja po nieudanej akcji — od razu wraca do gry?'
+      ]}
+    ],
+    kondycja: 'Dystans 11 000m · HIR 700m · 250 akceleracji · Maks. 33+ km/h · Player load 1100'
+  },
+  cf: {
+    pos: 'Napastnik środkowy (ST/CF)',
+    groups: [
+      { type: 'technika', label: 'Technika', items: [
+        '<strong>Wykończenie — nogi</strong> — ile strzałów, z jakich pozycji, jakość, lewa/prawa?',
+        '<strong>Wykończenie — głowa</strong> — zagrożenie przy dośrodkowaniach i SFG?',
+        '<strong>Gra plecami do bramki</strong> — utrzymuje piłkę, rozgrywa partnera?',
+        '<strong>Wybór miejsca</strong> — instynktowne wbiegania, "ślepe" ruchy?',
+        '<strong>Kombinacje</strong> — jeden dotyk, otwiera przestrzeń partnerom?'
+      ]},
+      { type: 'obrona', label: 'Obrona', items: [
+        '<strong>Pressing stoperów/bramkarza</strong> — aktywnie atakuje rozgrywkę rywala?',
+        '<strong>Blok obronny</strong> — zamyka środek czy stoi biernie?',
+        'Reakcja na odbite piłki — jest w odpowiednim miejscu?'
+      ]},
+      { type: 'atak', label: 'Atak', items: [
+        '<strong>Wbiegania za linię</strong> — jak często, jak inteligentnie?',
+        '<strong>Pojedynki powietrzne</strong> — dominuje przy dośrodkowaniach?',
+        '<strong>Produktywność</strong> — gole, asysty, ile sytuacji, ile zmarnował?'
+      ]},
+      { type: 'przełączanie', label: 'Przełączanie', items: [
+        'Pressing po stracie drużyny — natychmiast?',
+        'Na odzysk piłki — natychmiast wychodzi za linię obrony?',
+        'Pressing przy rozgrywce bramkarza rywala'
+      ]},
+      { type: 'motoryka', label: 'Motoryka', items: [
+        '<strong>Dynamika</strong> — przyspieszenie na małej przestrzeni w PK',
+        '<strong>Siła fizyczna</strong> — odporny przy silnych stoperach?',
+        'Wytrzymałość — aktywny w pressingu do końca meczu?',
+        '<strong>300 akceleracji · Maks. 33+ km/h</strong>'
+      ]},
+      { type: 'charakter', label: 'Charakter', items: [
+        '<strong>Głód gola</strong> — szuka strzału, bierze odpowiedzialność?',
+        'Reakcja po zmarnowanej okazji — determinacja czy spadek?',
+        'Przywództwo — drużyna rośnie z nim na boisku?'
+      ]}
+    ],
+    kondycja: 'Dystans 11 000m · HIR 600m · 300 akceleracji · Maks. 33+ km/h · Player load 1100'
+  }
+};
+
+function buildCheatSheet(pos) {
+  const data = CHEAT_SHEETS[pos];
+  if (!data) return '<p style="color:#8899bb;padding:16px">Brak danych dla tej pozycji.</p>';
+
+  let html = `<span class="obs-pos-badge">${data.pos}</span>`;
+
+  data.groups.forEach(g => {
+    html += `<div class="obs-group" data-type="${g.type}">
+      <span class="obs-group-title">${g.label}</span>
+      <ul class="obs-bullets">
+        ${g.items.map(item => `<li>${item}</li>`).join('')}
+      </ul>
+    </div>`;
+  });
+
+  if (data.kondycja) {
+    html += `<div class="obs-kondycja"><strong>Wymagania kondycyjne</strong>${data.kondycja}</div>`;
+  }
+
+  return html;
+}
+
+function loadObsBrudnopis() { /* handled in enterObserveMode */ }
+
+// ══════════════════════════════════════════════════════
+// TRYB OBSERWACJI — DUAL PANEL
+// ══════════════════════════════════════════════════════
+
+let obsSlots = {
+  A: { name: '', pos: 'winger', notes: '' },
+  B: { name: '', pos: 'winger', notes: '' }
+};
+let obsSaveTimer = null;
+
+function loadObsSlots() {
+  try {
+    const saved = localStorage.getItem('sigma_obs_slots');
+    if (saved) obsSlots = JSON.parse(saved);
+  } catch(e) {}
+}
+
+function saveObsSlots() {
+  // Flush both textareas to slots
+  ['A','B'].forEach(s => {
+    const ta = document.getElementById('obsNotes' + s);
+    if (ta) obsSlots[s].notes = ta.value;
+  });
+  try { localStorage.setItem('sigma_obs_slots', JSON.stringify(obsSlots)); } catch(e) {}
+  const ind = document.getElementById('obsSavedInd');
+  ind.classList.add('show');
+  clearTimeout(obsSaveTimer);
+  obsSaveTimer = setTimeout(() => ind.classList.remove('show'), 1600);
+}
+
+function renderPanel(s) {
+  const slot = obsSlots[s];
+  document.getElementById('obsName' + s).value = slot.name;
+  const posEl = document.getElementById('obsPos' + s);
+  posEl.value = slot.pos;
+  document.getElementById('obsNotes' + s).value = slot.notes;
+  document.getElementById('obsCheat' + s).innerHTML = buildCheatSheet(slot.pos);
+}
+
+function updateSlotName(s, val) {
+  obsSlots[s].name = val;
+  saveObsSlots();
+}
+
+function updateSlotPos(s, val) {
+  obsSlots[s].pos = val;
+  document.getElementById('obsCheat' + s).innerHTML = buildCheatSheet(val);
+  saveObsSlots();
+}
+
+function enterObserveMode() {
+  loadObsSlots();
+
+  // Pre-fill slot A from active form sheet if slot A is empty
+  const activeSheet = document.querySelector('.sheet.active');
+  const pos = activeSheet ? activeSheet.id : 'winger';
+  if (!obsSlots.A.name && !obsSlots.A.notes) {
+    obsSlots.A.pos = pos;
+    const nameEl = document.querySelector(`[data-key="${pos}_name"]`);
+    if (nameEl && nameEl.value) obsSlots.A.name = nameEl.value;
+  }
+  // Match info
+  const matchEl = document.querySelector(`[data-key="${pos}_match"]`);
+  if (matchEl && matchEl.value) document.getElementById('obsMatchInfo').textContent = matchEl.value;
+
+  renderPanel('A');
+  renderPanel('B');
+
+  document.getElementById('obsOverlay').classList.add('show');
+  document.body.style.overflow = 'hidden';
+  document.getElementById('obsNotesA').focus();
+}
+
+function clearObsPanel() {
+  // Ask which panel(s) to clear
+  const slotA = obsSlots.A;
+  const slotB = obsSlots.B;
+  const nameA = slotA.name || 'Zawodnik A';
+  const nameB = slotB.name || 'Zawodnik B';
+  const hasA = slotA.notes.trim();
+  const hasB = slotB.notes.trim();
+
+  if (!hasA && !hasB) { alert('Oba panele są już puste.'); return; }
+
+  let msg = 'Wyczyścić notatki?\n';
+  if (hasA) msg += `\n• Panel A: ${nameA}`;
+  if (hasB) msg += `\n• Panel B: ${nameB}`;
+  if (hasA && hasB) msg += '\n\nWpisz "A", "B" lub "oba":';
+  else msg += '\n\nPotwierdzić? (OK = tak)';
+
+  let choice = '';
+  if (hasA && hasB) {
+    choice = (prompt(msg) || '').trim().toLowerCase();
+    if (!choice) return;
+    if (choice !== 'a' && choice !== 'b' && choice !== 'oba') { alert('Nierozpoznana odpowiedź. Wpisz A, B lub oba.'); return; }
+  } else {
+    if (!confirm(msg)) return;
+    choice = hasA ? 'a' : 'b';
+  }
+
+  if (choice === 'a' || choice === 'oba') {
+    obsSlots.A.notes = '';
+    document.getElementById('obsNotesA').value = '';
+  }
+  if (choice === 'b' || choice === 'oba') {
+    obsSlots.B.notes = '';
+    document.getElementById('obsNotesB').value = '';
+  }
+  saveObsSlots();
+  refreshObsPanels();
+}
+
+function exitObserveMode() {
+  saveObsSlots();
+  document.getElementById('obsOverlay').classList.remove('show');
+  document.body.style.overflow = '';
+  refreshObsPanels();
+}
+
+// Live save on typing in either panel
+['A','B'].forEach(s => {
+  document.getElementById('obsNotes' + s).addEventListener('input', function() {
+    obsSlots[s].notes = this.value;
+    try { localStorage.setItem('sigma_obs_slots', JSON.stringify(obsSlots)); } catch(e) {}
+    const ind = document.getElementById('obsSavedInd');
+    ind.classList.add('show');
+    clearTimeout(obsSaveTimer);
+    obsSaveTimer = setTimeout(() => ind.classList.remove('show'), 1600);
+  });
+});
+</script>
+</body>
+</html>
