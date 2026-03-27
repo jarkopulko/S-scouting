@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SK Sigma Olomouc — Scouting Tool</title>
+<title>SK Sigma — Scouting Tool</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
@@ -15,72 +15,172 @@
   --txt:#edf2f8;--txt2:#7a95b2;--muted:#3d5470;--bdr:#1c2e44;
 }
 body{background:var(--bg);color:var(--txt);font-family:'Barlow',sans-serif;font-size:14px;min-height:100vh}
-.hdr{background:var(--bg2);border-bottom:1px solid var(--bdr);padding:13px 22px;display:flex;align-items:center;gap:13px;position:sticky;top:0;z-index:50}
-.logo{width:38px;height:38px;background:var(--blue);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:8px;color:#fff;text-align:center;line-height:1.3;flex-shrink:0}
-.hdr-t{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:18px;letter-spacing:.07em;text-transform:uppercase;flex:1}
-.hdr-s{font-size:10px;color:var(--txt2);letter-spacing:.1em;text-transform:uppercase}
-.main{max-width:1180px;margin:0 auto;padding:20px 20px 80px}
-.stitle{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin:22px 0 9px;display:flex;align-items:center;gap:9px}
+
+/* HEADER */
+.hdr{background:var(--bg2);border-bottom:1px solid var(--bdr);padding:12px 16px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:50}
+.logo{width:36px;height:36px;min-width:36px;background:var(--blue);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:7px;color:#fff;text-align:center;line-height:1.3}
+.hdr-info{flex:1;min-width:0}
+.hdr-t{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:17px;letter-spacing:.07em;text-transform:uppercase;white-space:nowrap}
+.hdr-s{font-size:10px;color:var(--txt2);letter-spacing:.09em;text-transform:uppercase}
+.clear-btn{padding:8px 14px;background:transparent;border:1px solid var(--bdr);border-radius:6px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:.07em;text-transform:uppercase;cursor:pointer;transition:all .15s;white-space:nowrap;min-height:36px}
+.clear-btn:hover{border-color:var(--red);color:var(--red)}
+.save-dot{width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0;opacity:0;transition:opacity .3s}
+.save-dot.show{opacity:1}
+
+/* MAIN */
+.main{max-width:1180px;margin:0 auto;padding:16px 14px 80px}
+.stitle{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin:20px 0 8px;display:flex;align-items:center;gap:9px}
 .stitle::after{content:'';flex:1;height:1px;background:var(--bdr)}
+
+/* INPUTS */
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
 .fl{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
-.fi{background:var(--inp);border:1px solid var(--bdr);border-radius:6px;padding:8px 11px;color:var(--txt);font-size:13px;width:100%;outline:none;font-family:'Barlow',sans-serif;transition:border-color .15s}
+.fi{background:var(--inp);border:1px solid var(--bdr);border-radius:6px;padding:9px 11px;color:var(--txt);font-size:14px;width:100%;outline:none;font-family:'Barlow',sans-serif;transition:border-color .15s;-webkit-appearance:none}
 .fi:focus{border-color:var(--blue2)}
 .fi::placeholder{color:var(--muted)}
 .fi.nm{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;padding:9px 13px;margin-bottom:10px}
 .fi:disabled{background:var(--bg2);color:var(--muted);cursor:default;border-color:var(--bdr)}
 .tog{display:flex;background:var(--inp);border:1px solid var(--bdr);border-radius:6px;overflow:hidden}
-.tbtn{flex:1;padding:8px 6px;border:none;background:transparent;color:var(--txt2);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:all .15s}
+.tbtn{flex:1;padding:9px 6px;border:none;background:transparent;color:var(--txt2);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:all .15s;min-height:40px}
 .tbtn.on{background:var(--blue);color:#fff}
+
+/* POSITION TABS */
 .ptabs{display:flex;gap:6px;flex-wrap:wrap}
-.ptab{background:var(--card);border:1px solid var(--bdr);border-radius:6px;padding:7px 14px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--txt2);transition:all .15s}
+.ptab{background:var(--card);border:1px solid var(--bdr);border-radius:6px;padding:9px 13px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--txt2);transition:all .15s;min-height:40px;display:flex;align-items:center}
 .ptab:hover{border-color:var(--blue2);color:var(--txt)}
 .ptab.on{background:var(--blue);border-color:var(--blue);color:#fff}
+
+/* CHECKLIST */
 .cl-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .cl-box{background:var(--card);border:1px solid var(--bdr);border-radius:9px;padding:14px}
 .cl-title{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--green);padding-bottom:8px;border-bottom:1px solid var(--bdr);margin-bottom:9px}
 .cl-div{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin:10px 0 5px;display:flex;align-items:center;gap:7px}
 .cl-div::after{content:'';flex:1;height:1px;background:var(--bdr)}
-.ci-row{margin-bottom:1px}
-.ci-main{display:flex;align-items:flex-start;gap:8px;padding:4px 6px;border-radius:5px;transition:background .1s}
-.ci-main.st-yes{background:var(--green-bg)}
-.ci-main.st-no{background:var(--red-bg)}
-.ci-btns{display:flex;gap:3px;flex-shrink:0;margin-top:2px}
-.chk{width:18px;height:18px;border:1.5px solid var(--muted);border-radius:3px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:10px;font-weight:900;transition:all .15s;user-select:none;flex-shrink:0;background:transparent}
-.chk:hover{border-color:var(--txt2)}
-.chk.yes{background:var(--green);border-color:var(--green);color:#000}
-.chk.no{background:var(--red);border-color:var(--red);color:#fff}
-.ci-lbl{font-size:12px;color:var(--txt2);line-height:1.45;cursor:default;flex:1}
-.ci-main.st-yes .ci-lbl,.ci-main.st-no .ci-lbl{color:var(--txt)}
-.ci-note{display:none;margin:3px 0 6px 29px}
+
+/* 3-LEVEL SCALE */
+.ci-row{margin-bottom:3px}
+.ci-main{display:flex;align-items:flex-start;gap:8px;padding:5px 6px;border-radius:5px;transition:background .1s}
+.ci-main.st-good,.ci-main.st-ok,.ci-main.st-bad{background:transparent}
+.ci-btns{display:flex;gap:3px;flex-shrink:0;margin-top:1px}
+.scl{width:26px;height:26px;padding:0;border-radius:50%;border:2px solid transparent;background:transparent;font-size:16px;cursor:pointer;transition:all .15s;user-select:none;white-space:nowrap;-webkit-tap-highlight-color:transparent;display:flex;align-items:center;justify-content:center;opacity:.25;filter:saturate(.4)}
+.scl:hover{opacity:.55;filter:saturate(.8);transform:scale(1.12)}
+.scl.good{opacity:1;filter:saturate(1);transform:scale(1.1)}
+.scl.ok{opacity:1;filter:saturate(1);transform:scale(1.1)}
+.scl.bad{opacity:1;filter:saturate(1);transform:scale(1.1)}
+.ci-lbl{font-size:12px;color:var(--txt2);line-height:1.5;cursor:default;flex:1}
+.ci-main.st-good .ci-lbl,.ci-main.st-ok .ci-lbl,.ci-main.st-bad .ci-lbl{color:var(--txt)}
+
+.ci-note{display:none;margin:3px 0 6px 30px}
 .ci-note.show{display:block}
-.ci-note textarea{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--bdr);border-radius:4px;padding:4px 8px;color:var(--txt2);font-size:11px;font-family:'Barlow',sans-serif;outline:none;resize:none;overflow:hidden;line-height:1.4;transition:border-color .15s;min-height:22px}
+.ci-note textarea{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--bdr);border-radius:4px;padding:5px 8px;color:var(--txt2);font-size:12px;font-family:'Barlow',sans-serif;outline:none;resize:none;overflow:hidden;line-height:1.45;transition:border-color .15s;min-height:26px}
 .ci-note textarea:focus{border-color:var(--blue2);color:var(--txt)}
 .ci-note textarea::placeholder{color:var(--muted);font-style:italic}
+
 .sec-note-label{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin:11px 0 4px;border-top:1px solid var(--bdr);padding-top:10px}
-.sec-note textarea{width:100%;background:var(--inp);border:1px solid var(--bdr);border-radius:5px;padding:7px 10px;color:var(--txt2);font-size:12px;font-family:'Barlow',sans-serif;outline:none;resize:none;min-height:40px;overflow:hidden;line-height:1.5;transition:border-color .15s}
+.sec-note textarea{width:100%;background:var(--inp);border:1px solid var(--bdr);border-radius:5px;padding:8px 10px;color:var(--txt2);font-size:13px;font-family:'Barlow',sans-serif;outline:none;resize:none;min-height:44px;overflow:hidden;line-height:1.5;transition:border-color .15s}
 .sec-note textarea:focus{border-color:var(--blue2);color:var(--txt)}
 .sec-note textarea::placeholder{color:var(--muted);font-style:italic}
+
+/* RATINGS */
 .rat-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;background:var(--card);border:1px solid var(--bdr);border-radius:9px;padding:14px}
 .rl{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
 .rec-btns{display:flex;gap:7px}
-.rec-btn{flex:1;padding:10px;border:1px solid var(--bdr);border-radius:6px;background:var(--inp);font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:16px;cursor:pointer;color:var(--txt2);transition:all .15s}
+.rec-btn{flex:1;padding:11px;border:1px solid var(--bdr);border-radius:6px;background:var(--inp);font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:17px;cursor:pointer;color:var(--txt2);transition:all .15s;min-height:44px;-webkit-tap-highlight-color:transparent}
 .rec-btn.ano.on{background:rgba(184,245,66,.15);border-color:var(--green);color:var(--green)}
 .rec-btn.ne.on{background:rgba(239,68,68,.15);border-color:var(--red);color:var(--red)}
-.rsel{background:var(--inp);border:1px solid var(--bdr);border-radius:6px;padding:9px 10px;color:var(--txt);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px;width:100%;outline:none;cursor:pointer;transition:border-color .15s;text-align:center}
+.rsel{background:var(--inp);border:1px solid var(--bdr);border-radius:6px;padding:10px;color:var(--txt);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px;width:100%;outline:none;cursor:pointer;transition:border-color .15s;text-align:center;min-height:44px;-webkit-appearance:none}
 .rsel:focus{border-color:var(--blue2)}
 .rsel option{background:var(--card)}
-.match-notes{width:100%;background:var(--card);border:1px solid var(--bdr);border-radius:9px;padding:11px 14px;color:var(--txt2);font-family:'Barlow',sans-serif;font-size:13px;outline:none;resize:none;min-height:80px;line-height:1.65;transition:border-color .15s}
+
+/* MATCH NOTES */
+.match-notes{width:100%;background:var(--card);border:1px solid var(--bdr);border-radius:9px;padding:11px 14px;color:var(--txt2);font-family:'Barlow',sans-serif;font-size:14px;outline:none;resize:none;min-height:90px;line-height:1.65;transition:border-color .15s}
 .match-notes:focus{border-color:var(--blue2);color:var(--txt)}
 .match-notes::placeholder{color:var(--muted);font-style:italic}
-.copy-btn{width:100%;padding:15px;background:var(--green);border:none;border-radius:8px;color:#000;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:16px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .15s;margin-top:18px}
-.copy-btn:hover:not(:disabled){background:#cfff70;transform:translateY(-1px)}
+
+/* BUTTONS */
+.copy-btn{width:100%;padding:16px;background:var(--green);border:none;border-radius:8px;color:#000;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:16px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .15s;margin-top:18px;min-height:52px;-webkit-tap-highlight-color:transparent}
+.copy-btn:active{transform:scale(.98)}
 .copy-btn:disabled{background:var(--muted);cursor:not-allowed;color:var(--bg2)}
 .copy-btn.copied{background:#28a745;color:#fff}
+.pdf-btn{width:100%;padding:13px;background:transparent;border:1.5px solid var(--bdr);border-radius:8px;color:var(--txt2);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .15s;margin-top:8px;min-height:46px;-webkit-tap-highlight-color:transparent;display:flex;align-items:center;justify-content:center;gap:8px}
+.pdf-btn:hover{border-color:var(--blue2);color:var(--txt)}
+.pdf-btn:active{transform:scale(.98)}
+
+/* PRINT / PDF */
+@media print{
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  body{background:#fff!important;color:#111!important;font-family:'Barlow',sans-serif;font-size:11pt}
+  .hdr,.tip-box,.copy-btn,.pdf-btn,.modal-bg,.save-dot,.clear-btn{display:none!important}
+  .main{padding:0!important;max-width:100%!important}
+  .stitle{color:#555!important;border-bottom:1pt solid #ccc;padding-bottom:4pt;margin:14pt 0 7pt}
+  .stitle::after{display:none}
+  .fi,.fi.nm{background:#f8f8f8!important;border:1pt solid #ddd!important;color:#111!important;-webkit-print-color-adjust:exact}
+  .fi:disabled{background:#f0f0f0!important;color:#555!important}
+  .tog{border:1pt solid #ddd!important;background:#fff!important}
+  .tbtn{color:#555!important}
+  .tbtn.on{background:#1a4fa0!important;color:#fff!important}
+  .ptabs{flex-wrap:wrap;gap:4pt}
+  .ptab{border:1pt solid #ddd!important;color:#555!important;font-size:9pt!important;padding:5pt 9pt!important;background:#f8f8f8!important}
+  .ptab.on{background:#1a4fa0!important;color:#fff!important;border-color:#1a4fa0!important}
+  .cl-grid{grid-template-columns:1fr 1fr;gap:8pt;page-break-inside:avoid}
+  .cl-box{border:1pt solid #ddd!important;background:#fafafa!important;padding:10pt!important;page-break-inside:avoid}
+  .cl-title{color:#1a4fa0!important;border-bottom:1pt solid #ddd!important}
+  .cl-div{color:#888!important}
+  .cl-div::after{background:#ddd!important}
+  .ci-main{padding:3pt 4pt!important}
+  .ci-lbl{color:#222!important;font-size:9pt!important}
+  .scl{font-size:13px!important;opacity:.2!important;filter:saturate(.3)!important}
+  .scl.good,.scl.ok,.scl.bad{opacity:1!important;filter:saturate(1)!important}
+  .ci-note{margin-left:20pt!important}
+  .ci-note.show{display:block!important}
+  .ci-note textarea{background:#f5f5f5!important;border:1pt solid #ddd!important;color:#333!important;font-size:9pt!important}
+  .sec-note-label{color:#888!important;border-top:1pt solid #eee!important}
+  .sec-note textarea{background:#f5f5f5!important;border:1pt solid #ddd!important;color:#333!important;font-size:9pt!important}
+  .rat-row{background:#fafafa!important;border:1pt solid #ddd!important;page-break-inside:avoid}
+  .rl{color:#555!important}
+  .rec-btn{border:1pt solid #ddd!important;background:#f5f5f5!important;color:#aaa!important}
+  .rec-btn.ano.on{background:#d4edda!important;border-color:#28a745!important;color:#1a6b2a!important}
+  .rec-btn.ne.on{background:#fde8e8!important;border-color:#dc3545!important;color:#8b0000!important}
+  .rsel{background:#f5f5f5!important;border:1pt solid #ddd!important;color:#111!important}
+  .match-notes{background:#fafafa!important;border:1pt solid #ddd!important;color:#333!important}
+  .empty-pos{display:none!important}
+  /* print header */
+  .print-header{display:flex!important}
+}
+.print-header{display:none;justify-content:space-between;align-items:center;padding-bottom:10pt;border-bottom:2pt solid #1a4fa0;margin-bottom:14pt}
+.print-header-name{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:18pt;letter-spacing:.04em;text-transform:uppercase;color:#111}
+.print-header-meta{font-size:9pt;color:#555;text-align:right;line-height:1.6}
+
 .tip-box{background:var(--card);border:1px solid var(--bdr);border-radius:9px;padding:13px 16px;margin-top:12px;font-size:13px;color:var(--txt2);line-height:1.6}
 .tip-box strong{color:var(--green)}
 .empty-pos{text-align:center;padding:30px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:.08em;text-transform:uppercase}
+
+/* MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px}
+.modal{background:var(--card);border:1px solid var(--bdr);border-radius:12px;padding:28px 24px;max-width:340px;width:100%;text-align:center}
+.modal-title{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:18px;letter-spacing:.05em;text-transform:uppercase;margin-bottom:10px;color:var(--txt)}
+.modal-txt{font-size:13px;color:var(--txt2);line-height:1.6;margin-bottom:22px}
+.modal-btns{display:flex;gap:10px}
+.modal-cancel{flex:1;padding:12px;background:var(--inp);border:1px solid var(--bdr);border-radius:7px;color:var(--txt2);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer}
+.modal-confirm{flex:1;padding:12px;background:var(--red);border:none;border-radius:7px;color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:14px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer}
+
+/* MOBILE */
+@media(max-width:680px){
+  .hdr-s{display:none}
+  .g2{grid-template-columns:1fr}
+  .g3{grid-template-columns:1fr 1fr}
+  .cl-grid{grid-template-columns:1fr}
+  .rat-row{grid-template-columns:1fr}
+  .ptab{font-size:11px;padding:8px 10px}
+  .fi.nm{font-size:18px}
+  .stitle{margin:16px 0 7px}
+  .main{padding:12px 12px 80px}
+}
+@media(max-width:400px){
+  .g3{grid-template-columns:1fr}
+  .ptab{font-size:10px;padding:7px 8px}
+}
 </style>
 </head>
 <body>
@@ -88,11 +188,38 @@ body{background:var(--bg);color:var(--txt);font-family:'Barlow',sans-serif;font-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
 <script>
-var _us=React.useState,h=React.createElement,today=new Date().toISOString().slice(0,10);
-var POSITIONS=[{id:'GK',label:'GK — BRAMKARZ'},{id:'CB',label:'CB — ŚR. OBROŃCA'},{id:'RB',label:'RB — PRAWY OBROŃCA'},{id:'LB',label:'LB — LEWY OBROŃCA'},{id:'CM',label:'CM — ŚR. POMOCNIK'},{id:'AM',label:'AM — OF. POMOCNIK'},{id:'RW',label:'RW — PRAWY SKRZYDŁOWY'},{id:'LW',label:'LW — LEWY SKRZYDŁOWY'},{id:'ST',label:'ST — NAPASTNIK'}];
+var _us=React.useState,_ue=React.useEffect,h=React.createElement;
+var today=new Date().toISOString().slice(0,10);
+var LS_KEY='sigma_scouting_v1';
+
+var POSITIONS=[
+  {id:'GK',label:'GK — BRAMKARZ'},
+  {id:'CB',label:'CB — ŚR. OBROŃCA'},
+  {id:'RB',label:'RB — PRAWY OBROŃCA'},
+  {id:'LB',label:'LB — LEWY OBROŃCA'},
+  {id:'CM',label:'CM — ŚR. POMOCNIK'},
+  {id:'AM',label:'AM — OF. POMOCNIK'},
+  {id:'RW',label:'RW — PRAWY SKRZYDŁOWY'},
+  {id:'LW',label:'LW — LEWY SKRZYDŁOWY'},
+  {id:'ST',label:'ST — NAPASTNIK'},
+];
 var SEC_PL={tech:'Technika i Taktika',def:'Obrona i Atak',press:'Przełączanie i Pressing',motor:'Fizyka i Charakter'};
 var SECS=['tech','def','press','motor'];
 var POS_TO_CL={GK:'GK',CB:'CB',RB:'FB',LB:'FB',CM:'CM',AM:'AM',RW:'W',LW:'W',ST:'ST'};
+
+var EMPTY={
+  name:'',tmLink:'',mode:'Video',date:today,pos:null,
+  chk:{},cnotes:{},snotes:{tech:'',def:'',press:'',motor:''},
+  matchNotes:'',ratings:{rec:'',rating:'',pot:''}
+};
+
+function loadState(){
+  try{var s=localStorage.getItem(LS_KEY);return s?JSON.parse(s):null;}catch(e){return null;}
+}
+function saveState(s){
+  try{localStorage.setItem(LS_KEY,JSON.stringify(s));}catch(e){}
+}
+
 var CL={
 GK:{
 tech:['Technika chwytania — pewność przy interwencjach, eliminowanie odbitych piłek','Gra nogą (krótka) — dokładność podań do 25 m przy rozgrywaniu od tyłu','Gra nogą (długa) — wybicia i dystrybucja na drugi koniec boiska','Spokój przy rozgrywaniu pod pressingiem rywala','Timing wyjścia — decyzja o wyjściu z bramki lub pozostaniu na linii'],
@@ -140,6 +267,7 @@ motor:['Prędkość i eksplozywność — szybkość sprintów za obroną rywala
 
 function autoH(el){if(!el)return;el.style.height='auto';el.style.height=el.scrollHeight+'px';}
 
+/* ClSection outside App to avoid remount on state change */
 function ClSection(props){
   var sec=props.sec,clKey=props.clKey,chk=props.chk,cnotes=props.cnotes,snotes=props.snotes;
   var setChkVal=props.setChkVal,setCn=props.setCn,usn=props.usn;
@@ -149,16 +277,18 @@ function ClSection(props){
   var rows=items.map(function(item,fi){
     if(typeof item==='object'&&item.div)return h('div',{key:'d'+fi,className:'cl-div'},item.div);
     var ci=checkIdx++;var state=getChk(sec,ci);
+    var rowCls='ci-main'+(state==='good'?' st-good':state==='ok'?' st-ok':state==='bad'?' st-bad':'');
     return h('div',{key:fi,className:'ci-row'},
-      h('div',{className:'ci-main'+(state==='yes'?' st-yes':state==='no'?' st-no':'')},
+      h('div',{className:rowCls},
         h('div',{className:'ci-btns'},
-          h('div',{className:'chk'+(state==='yes'?' yes':''),onClick:function(){setChkVal(sec,ci,'yes');},title:'Dobry element'},state==='yes'?'✓':''),
-          h('div',{className:'chk'+(state==='no'?' no':''),onClick:function(){setChkVal(sec,ci,'no');},title:'Słaby element'},state==='no'?'✕':'')
+          h('button',{className:'scl'+(state==='good'?' good':''),onClick:function(){setChkVal(sec,ci,'good');},title:'Mocny — wyróżnia się'},'🟢'),
+          h('button',{className:'scl'+(state==='ok'?' ok':''),   onClick:function(){setChkVal(sec,ci,'ok');},   title:'OK — jest, ale poniżej oczekiwań'},'🟡'),
+          h('button',{className:'scl'+(state==='bad'?' bad':''), onClick:function(){setChkVal(sec,ci,'bad');},  title:'Słaby — wyraźna słabość'},'🔴')
         ),
         h('span',{className:'ci-lbl'},item)
       ),
       h('div',{className:'ci-note'+(state!==null?' show':'')},
-        h('textarea',{placeholder:'Komentarz — np. spełnia w 70%, bo...',value:getCn(sec,ci),rows:1,
+        h('textarea',{placeholder:'Komentarz — dodaj szczegół...',value:getCn(sec,ci),rows:1,
           onChange:function(e){setCn(sec,ci,e.target.value);autoH(e.target);},
           onFocus:function(e){autoH(e.target);}})
       )
@@ -168,28 +298,39 @@ function ClSection(props){
     h('div',{className:'cl-title'},SEC_PL[sec]),rows,
     h('div',{className:'sec-note-label'},'Uwagi do sekcji'),
     h('div',{className:'sec-note'},
-      h('textarea',{
-        placeholder:'Ogólne uwagi — co wyróżniało zawodnika w tej sekcji...',
-        value:snotes[sec]||'',rows:2,
+      h('textarea',{placeholder:'Ogólne uwagi — co wyróżniało zawodnika w tej sekcji...',value:snotes[sec]||'',rows:2,
         onChange:function(e){usn(sec,e.target.value);autoH(e.target);},
-        onFocus:function(e){autoH(e.target);}
-      })
+        onFocus:function(e){autoH(e.target);}})
     )
   );
 }
 
 function App(){
-  var ns=_us(''),name=ns[0],setName=ns[1];
-  var ts=_us(''),tmLink=ts[0],setTmLink=ts[1];
-  var ms=_us('Video'),mode=ms[0],setMode=ms[1];
-  var ds=_us(today),date=ds[0],setDate=ds[1];
-  var ps=_us(null),pos=ps[0],setPos=ps[1];
-  var cs=_us({}),chk=cs[0],setChk=cs[1];
-  var cns=_us({}),cnotes=cns[0],setCnotes=cns[1];
-  var sns=_us({tech:'',def:'',press:'',motor:''}),snotes=sns[0],setSnotes=sns[1];
-  var mns=_us(''),matchNotes=mns[0],setMatchNotes=mns[1];
-  var rs=_us({rec:'',rating:'',pot:''}),ratings=rs[0],setRatings=rs[1];
+  /* load saved state or defaults */
+  var saved=loadState()||EMPTY;
+
+  var ns=_us(saved.name),name=ns[0],setName=ns[1];
+  var ts=_us(saved.tmLink),tmLink=ts[0],setTmLink=ts[1];
+  var ms=_us(saved.mode||'Video'),mode=ms[0],setMode=ms[1];
+  var ds=_us(saved.date||today),date=ds[0],setDate=ds[1];
+  var ps=_us(saved.pos||null),pos=ps[0],setPos=ps[1];
+  var cs=_us(saved.chk||{}),chk=cs[0],setChk=cs[1];
+  var cns=_us(saved.cnotes||{}),cnotes=cns[0],setCnotes=cns[1];
+  var sns=_us(saved.snotes||{tech:'',def:'',press:'',motor:''}),snotes=sns[0],setSnotes=sns[1];
+  var mns=_us(saved.matchNotes||''),matchNotes=mns[0],setMatchNotes=mns[1];
+  var rs=_us(saved.ratings||{rec:'',rating:'',pot:''}),ratings=rs[0],setRatings=rs[1];
   var cp=_us(false),wasCopied=cp[0],setCopied=cp[1];
+  var sd=_us(false),showSaved=sd[0],setShowSaved=sd[1];
+  var sc=_us(false),showConfirm=sc[0],setShowConfirm=sc[1];
+
+  /* persist to localStorage on every change */
+  _ue(function(){
+    var state={name:name,tmLink:tmLink,mode:mode,date:date,pos:pos,chk:chk,cnotes:cnotes,snotes:snotes,matchNotes:matchNotes,ratings:ratings};
+    saveState(state);
+    setShowSaved(true);
+    var t=setTimeout(function(){setShowSaved(false);},1200);
+    return function(){clearTimeout(t);};
+  },[name,tmLink,mode,date,pos,chk,cnotes,snotes,matchNotes,ratings]);
 
   var clKey=pos?POS_TO_CL[pos]:null;
   function getChk(sec,idx){return chk[sec+'_'+idx]||null;}
@@ -198,6 +339,14 @@ function App(){
   function setCn(sec,idx,v){setCnotes(function(p){var n=Object.assign({},p);n[sec+'_'+idx]=v;return n;});}
   function usn(k,v){setSnotes(function(p){var n=Object.assign({},p);n[k]=v;return n;});}
   function ur(k,v){setRatings(function(p){var n=Object.assign({},p);n[k]=v;return n;});}
+
+  function doClear(){
+    setName('');setTmLink('');setMode('Video');setDate(today);setPos(null);
+    setChk({});setCnotes({});setSnotes({tech:'',def:'',press:'',motor:''});
+    setMatchNotes('');setRatings({rec:'',rating:'',pot:''});
+    setShowConfirm(false);
+    try{localStorage.removeItem(LS_KEY);}catch(e){}
+  }
 
   function buildText(){
     var posLabel=pos?POSITIONS.find(function(x){return x.id===pos;}).label:'BRAK POZYCJI';
@@ -215,7 +364,13 @@ function App(){
       lines.push('--- '+SEC_PL[sec].toUpperCase()+' ---');
       items.forEach(function(item){
         if(typeof item==='object'&&item.div){lines.push('  ['+item.div+']');}
-        else{var state=getChk(sec,checkIdx),note=getCn(sec,checkIdx),mark=state==='yes'?'[+]':state==='no'?'[-]':'[ ]',line=mark+' '+item;if(note)line+='  // '+note;lines.push(line);checkIdx++;}
+        else{
+          var state=getChk(sec,checkIdx),note=getCn(sec,checkIdx);
+          var mark=state==='good'?'[MOCNY]':state==='ok'?'[OK]':state==='bad'?'[SŁABY]':'[ ]';
+          var line=mark+' '+item;
+          if(note)line+='  // '+note;
+          lines.push(line);checkIdx++;
+        }
       });
       if(snotes[sec])lines.push('  >> Uwagi do sekcji: '+snotes[sec]);
       lines.push('');
@@ -226,39 +381,121 @@ function App(){
   }
 
   function doCopy(){
-    navigator.clipboard.writeText(buildText()).then(function(){setCopied(true);setTimeout(function(){setCopied(false);},3000);});
+    navigator.clipboard.writeText(buildText()).then(function(){
+      setCopied(true);setTimeout(function(){setCopied(false);},3000);
+    });
   }
 
+  function doPrint(){window.print();}
+
   return h('div',null,
-    h('div',{className:'hdr'},h('div',{className:'logo'},'SK',h('br'),'SIGMA'),h('div',null,h('div',{className:'hdr-t'},'Scouting Tool'),h('div',{className:'hdr-s'},'SK Sigma Olomouc'))),
+    /* HEADER */
+    h('div',{className:'hdr'},
+      h('div',{className:'logo'},'SK',h('br'),'SIGMA'),
+      h('div',{className:'hdr-info'},
+        h('div',{className:'hdr-t'},'Scouting Tool'),
+        h('div',{className:'hdr-s'},'SK Sigma Olomouc')
+      ),
+      h('div',{className:'save-dot'+(showSaved?' show':'')}),
+      h('button',{className:'clear-btn',onClick:function(){setShowConfirm(true);},'aria-label':'Wyczyść formularz'},'Wyczyść')
+    ),
+
+    /* CONFIRM MODAL */
+    showConfirm&&h('div',{className:'modal-bg'},
+      h('div',{className:'modal'},
+        h('div',{className:'modal-title'},'Wyczyścić formularz?'),
+        h('div',{className:'modal-txt'},'Wszystkie wpisane dane i zaznaczone checkboxy zostaną usunięte. Tej operacji nie można cofnąć.'),
+        h('div',{className:'modal-btns'},
+          h('button',{className:'modal-cancel',onClick:function(){setShowConfirm(false);}},'Anuluj'),
+          h('button',{className:'modal-confirm',onClick:doClear},'Wyczyść')
+        )
+      )
+    ),
+
     h('div',{className:'main'},
+      /* PLAYER */
+      h('div',{className:'print-header'},
+        h('div',{className:'print-header-name'},name||'—'),
+        h('div',{className:'print-header-meta'},
+          (pos||'')+(pos&&'\n'||'')+
+          'Skaut: Jarosław Pulkowski\n'+
+          date+(mode?' · '+mode:'')
+        )
+      ),
       h('div',{className:'stitle'},'Zawodnik'),
       h('input',{className:'fi nm',placeholder:'Imię i nazwisko zawodnika...',value:name,onChange:function(e){setName(e.target.value);}}),
       h('div',{className:'g2'},
-        h('div',null,h('div',{className:'fl'},'Profil na Transfermarkt (link)'),h('input',{className:'fi',placeholder:'https://www.transfermarkt.com/...',value:tmLink,onChange:function(e){setTmLink(e.target.value);}})),
+        h('div',null,
+          h('div',{className:'fl'},'Profil na Transfermarkt (link)'),
+          h('input',{className:'fi',placeholder:'https://www.transfermarkt.com/...',value:tmLink,onChange:function(e){setTmLink(e.target.value);}})
+        ),
         h('div',{className:'g3'},
           h('div',null,h('div',{className:'fl'},'Skaut'),h('input',{className:'fi',value:'Jarosław Pulkowski',disabled:true})),
           h('div',null,h('div',{className:'fl'},'Data obserwacji'),h('input',{className:'fi',type:'date',value:date,onChange:function(e){setDate(e.target.value);}})),
-          h('div',null,h('div',{className:'fl'},'Typ obserwacji'),h('div',{className:'tog'},['Video','Na żywo'].map(function(o){return h('button',{key:o,className:'tbtn'+(mode===o?' on':''),onClick:function(){setMode(o);}},o);})))
+          h('div',null,
+            h('div',{className:'fl'},'Typ obserwacji'),
+            h('div',{className:'tog'},
+              ['Video','Na żywo'].map(function(o){return h('button',{key:o,className:'tbtn'+(mode===o?' on':''),onClick:function(){setMode(o);}},o);})
+            )
+          )
         )
       ),
+
+      /* POSITION */
       h('div',{className:'stitle'},'Pozycja obserwowanego zawodnika'),
-      h('div',{className:'ptabs'},POSITIONS.map(function(p){return h('button',{key:p.id,className:'ptab'+(pos===p.id?' on':''),onClick:function(){setPos(p.id);}},p.label);})),
+      h('div',{className:'ptabs'},
+        POSITIONS.map(function(p){return h('button',{key:p.id,className:'ptab'+(pos===p.id?' on':''),onClick:function(){setPos(p.id);}},p.label);})
+      ),
+
+      /* CHECKLIST */
       h('div',{className:'stitle'},'Checklista obserwacyjna'),
-      !clKey?h('div',{className:'empty-pos'},'Wybierz pozycję, aby zobaczyć checklistę'):h('div',{className:'cl-grid'},SECS.map(function(sec){return h(ClSection,{key:sec,sec:sec,clKey:clKey,chk:chk,cnotes:cnotes,snotes:snotes,setChkVal:setChkVal,setCn:setCn,usn:usn});})),
+      !clKey
+        ?h('div',{className:'empty-pos'},'Wybierz pozycję, aby zobaczyć checklistę')
+        :h('div',{className:'cl-grid'},
+            SECS.map(function(sec){return h(ClSection,{key:sec,sec:sec,clKey:clKey,chk:chk,cnotes:cnotes,snotes:snotes,setChkVal:setChkVal,setCn:setCn,usn:usn});})
+          ),
+
+      /* RATINGS */
       h('div',{className:'stitle'},'Ocena zawodnika'),
       h('div',{className:'rat-row'},
-        h('div',null,h('div',{className:'rl'},'Doporučení'),h('div',{className:'rec-btns'},h('button',{className:'rec-btn ano'+(ratings.rec==='ANO'?' on':''),onClick:function(){ur('rec','ANO');}}, 'ANO'),h('button',{className:'rec-btn ne'+(ratings.rec==='NE'?' on':''),onClick:function(){ur('rec','NE');}}, 'NE'))),
-        h('div',null,h('div',{className:'rl'},'Hodnocení (A = najlepiej)'),h('select',{className:'rsel',value:ratings.rating,onChange:function(e){ur('rating',e.target.value);}},h('option',{value:''},'—'),['A','B','C','D'].map(function(v){return h('option',{key:v,value:v},v);}))),
-        h('div',null,h('div',{className:'rl'},'Potenciál (A = najlepiej)'),h('select',{className:'rsel',value:ratings.pot,onChange:function(e){ur('pot',e.target.value);}},h('option',{value:''},'—'),['A','B','C','D'].map(function(v){return h('option',{key:v,value:v},v);})))
+        h('div',null,
+          h('div',{className:'rl'},'Doporučení'),
+          h('div',{className:'rec-btns'},
+            h('button',{className:'rec-btn ano'+(ratings.rec==='ANO'?' on':''),onClick:function(){ur('rec','ANO');}}, 'ANO'),
+            h('button',{className:'rec-btn ne'+(ratings.rec==='NE'?' on':''),onClick:function(){ur('rec','NE');}},  'NE')
+          )
+        ),
+        h('div',null,
+          h('div',{className:'rl'},'Hodnocení (A = najlepiej)'),
+          h('select',{className:'rsel',value:ratings.rating,onChange:function(e){ur('rating',e.target.value);}},
+            h('option',{value:''},'—'),['A','B','C','D'].map(function(v){return h('option',{key:v,value:v},v);})
+          )
+        ),
+        h('div',null,
+          h('div',{className:'rl'},'Potenciál (A = najlepiej)'),
+          h('select',{className:'rsel',value:ratings.pot,onChange:function(e){ur('pot',e.target.value);}},
+            h('option',{value:''},'—'),['A','B','C','D'].map(function(v){return h('option',{key:v,value:v},v);})
+          )
+        )
       ),
+
+      /* MATCH NOTES */
       h('div',{className:'stitle'},'Ogólne notatki z meczu'),
       h('textarea',{className:'match-notes',placeholder:'Kontekst meczu, wynik, styl gry drużyny, warunki obserwacji, cokolwiek istotnego...',value:matchNotes,rows:4,onChange:function(e){setMatchNotes(e.target.value);autoH(e.target);},onFocus:function(e){autoH(e.target);}}),
-      h('button',{className:'copy-btn'+(wasCopied?' copied':''),onClick:doCopy,disabled:!pos||!name},wasCopied?'✓  Skopiowano — wklej do Claude (Ctrl+V)':'Kopiuj dane i wklej do Claude'),
-      h('div',{className:'tip-box'},h('strong',null,'Jak to działa: '),'Wypełnij checklistę i notatki podczas oglądania meczu. Kliknij przycisk — dane trafią do schowka. Wklej je w oknie Claude, który przygotuje gotowy tekst do raportu Sigmy.')
+
+      /* COPY */
+      h('button',{className:'copy-btn'+(wasCopied?' copied':''),onClick:doCopy,disabled:!pos||!name},
+        wasCopied?'✓  Skopiowano — wklej do Claude (Ctrl+V)':'Kopiuj dane i wklej do Claude'
+      ),
+      h('button',{className:'pdf-btn',onClick:doPrint},'📄  Zapisz jako PDF'),
+      h('div',{className:'tip-box'},
+        h('strong',null,'Jak to działa: '),
+        'Wypełnij checklistę i notatki podczas oglądania meczu. Kliknij przycisk — dane trafią do schowka. Wklej je w oknie Claude, który przygotuje gotowy tekst do raportu Sigmy.'
+      )
     )
   );
 }
+
 ReactDOM.render(h(App),document.getElementById('app'));
 </script>
 </body>
