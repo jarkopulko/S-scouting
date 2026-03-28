@@ -496,7 +496,10 @@ function App(){
       ),
       h('div',{className:'save-dot'+(showSaved?' show':'')}),
       total>1&&h('div',{className:'hdr-player'},
-        h('div',{className:'hdr-player-name'},players[activeIdx].name||'—')
+        h('div',{className:'hdr-player-name'},
+          (players[activeIdx].pos ? players[activeIdx].pos+' · ' : '')+
+          (players[activeIdx].name||'—')
+        )
       ),
       h('button',{className:'hdr-btn add',onClick:addPlayer},
         h('span',{className:'btn-short'},'+'),
