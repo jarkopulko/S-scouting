@@ -23,10 +23,10 @@ body{background:var(--bg);color:var(--txt);font-family:'Barlow',sans-serif;font-
 .hdr-t{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:16px;letter-spacing:.07em;text-transform:uppercase;white-space:nowrap}
 .hdr-s{font-size:9px;color:var(--txt2);letter-spacing:.09em;text-transform:uppercase}
 .hdr-spacer{flex:1}
-.hdr-player{background:var(--inp);border:1px solid var(--bdr);border-radius:6px;padding:5px 11px;display:flex;flex-direction:column;gap:1px;min-width:0;max-width:160px}
-.hdr-player-num{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--green)}
-.hdr-player-name{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:13px;color:var(--green);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-@media(max-width:480px){.hdr-player{max-width:100px}.hdr-player-name{font-size:11px}}
+.hdr-right{display:flex;align-items:center;gap:8px;margin-left:auto}
+.hdr-player{background:var(--inp);border:1px solid var(--bdr);border-radius:6px;padding:0 13px;display:flex;align-items:center;min-width:0;max-width:200px;min-height:34px}
+.hdr-player-name{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:14px;color:var(--green);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media(max-width:480px){.hdr-player{max-width:110px}.hdr-player-name{font-size:12px}}
 .save-dot{width:6px;height:6px;min-width:6px;border-radius:50%;background:var(--green);opacity:0;transition:opacity .3s}
 .save-dot.show{opacity:1}
 
@@ -495,18 +495,20 @@ function App(){
         h('div',{className:'hdr-s'},'SK Sigma Olomouc')
       ),
       h('div',{className:'save-dot'+(showSaved?' show':'')}),
-      total>1&&h('div',{className:'hdr-player'},
-        h('div',{className:'hdr-player-name'},
-          (players[activeIdx].pos ? players[activeIdx].pos+' · ' : '')+
-          (players[activeIdx].name||'—')
+      h('div',{className:'hdr-right'},
+        total>1&&h('div',{className:'hdr-player'},
+          h('div',{className:'hdr-player-name'},
+            (players[activeIdx].pos ? players[activeIdx].pos+' · ' : '')+
+            (players[activeIdx].name||'—')
+          )
+        ),
+        h('button',{className:'hdr-btn add',onClick:addPlayer},
+          h('span',{className:'btn-short'},'+'),
+          h('span',{className:'btn-full'},'+ Dodaj zawodnika')
+        ),
+        h('button',{className:'hdr-btn clear',onClick:function(){setShowConfirm(true);}},
+          'Wyczyść'
         )
-      ),
-      h('button',{className:'hdr-btn add',onClick:addPlayer},
-        h('span',{className:'btn-short'},'+'),
-        h('span',{className:'btn-full'},'+ Dodaj zawodnika')
-      ),
-      h('button',{className:'hdr-btn clear',onClick:function(){setShowConfirm(true);}},
-        'Wyczyść'
       )
     ),
 
@@ -633,7 +635,7 @@ function App(){
           h('button',{className:'pdf-btn',onClick:function(){window.print();}},'📄  Zapisz jako PDF'),
           idx===players.length-1&&h('div',{className:'tip-box'},
             h('strong',null,'Jak to działa: '),
-            'Wypełnij checklistę i notatki podczas oglądania meczu. Kliknij "Kopiuj" — dane trafią do schowka. Wklej je w oknie Claude, który przygotuje gotowy tekst do raportu Sigmy.'
+            'Wypełnij checklistę i notatki podczas oglądania meczu. Kliknij "Kopiuj dane" — dane trafią do schowka.'
           )
         );
       })
