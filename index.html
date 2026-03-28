@@ -401,11 +401,15 @@ function App(){
   },[players.length]);
 
   function scrollToPlayer(idx,id){
-    var el=document.getElementById('ps-'+id);
-    if(!el)return;
-    var hdrH=(document.querySelector('.hdr')||{offsetHeight:60}).offsetHeight;
-    var top=el.getBoundingClientRect().top+window.scrollY-hdrH-12;
-    setTimeout(function(){window.scrollTo({top:top,behavior:'smooth'});},60);
+    var attempts=0;
+    function tryScroll(){
+      var el=document.getElementById('ps-'+id);
+      if(!el){if(attempts++<10)setTimeout(tryScroll,50);return;}
+      var hdrH=(document.querySelector('.hdr')||{offsetHeight:60}).offsetHeight;
+      var top=el.getBoundingClientRect().top+window.scrollY-hdrH-12;
+      window.scrollTo({top:top,behavior:'smooth'});
+    }
+    setTimeout(tryScroll,50);
   }
 
   function addPlayer(){
