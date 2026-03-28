@@ -18,6 +18,7 @@ body{background:var(--bg);color:var(--txt);font-family:'Barlow',sans-serif;font-
 
 /* HEADER */
 .hdr{background:var(--bg2);border-bottom:1px solid var(--bdr);padding:10px 14px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:50;flex-wrap:nowrap}
+.hdr-center{position:absolute;left:50%;transform:translateX(-50%);pointer-events:none}
 .logo{width:34px;height:34px;min-width:34px;background:var(--blue);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:7px;color:#fff;text-align:center;line-height:1.3}
 .hdr-info{min-width:0}
 .hdr-t{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:16px;letter-spacing:.07em;text-transform:uppercase;white-space:nowrap}
@@ -36,10 +37,7 @@ body{background:var(--bg);color:var(--txt);font-family:'Barlow',sans-serif;font-
 .rnav-btn:hover:not(:disabled){background:var(--inp);color:var(--txt)}
 .rnav-btn:disabled{opacity:.2;cursor:default}
 .rnav-counter{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:12px;color:var(--txt);text-align:center;line-height:1.2;padding:2px 0}
-.rnav-dots{display:flex;flex-direction:column;gap:5px;padding:2px 0}
-.rnav-dot{width:8px;height:8px;border-radius:50%;background:var(--bdr);border:none;cursor:pointer;transition:all .15s;padding:0;-webkit-tap-highlight-color:transparent}
-.rnav-dot.on{background:var(--green);transform:scale(1.2)}
-.rnav-dot:hover:not(.on){background:var(--txt2)}
+.rnav-dots{display:flex;flex-direction:column;gap:6px;padding:2px 0;align-items:center}
 @media(max-width:480px){
   .rnav{right:6px;padding:6px 5px}
   .rnav-btn{width:30px;height:30px;font-size:16px}
@@ -53,11 +51,23 @@ body{background:var(--bg);color:var(--txt);font-family:'Barlow',sans-serif;font-
 
 /* PLAYER SECTION */
 .player-section{margin-bottom:0}
-.player-divider{display:flex;align-items:center;gap:12px;padding:22px 0 10px}
+.player-divider{display:flex;align-items:center;gap:12px;padding:22px 0 6px}
 .player-divider-line{flex:1;height:1px;background:var(--bdr)}
 .player-label{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--blue2);white-space:nowrap}
 .remove-btn{padding:4px 10px;background:transparent;border:1px solid var(--bdr);border-radius:5px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:all .15s}
 .remove-btn:hover{border-color:var(--red);color:var(--red)}
+
+/* PROGRESS BAR */
+.prog-row{display:flex;align-items:center;gap:8px;padding:0 0 12px}
+.prog-bar{flex:1;height:4px;background:var(--bdr);border-radius:2px;overflow:hidden}
+.prog-fill{height:100%;border-radius:2px;transition:width .4s ease,background .4s ease}
+.prog-pct{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:11px;min-width:32px;text-align:right;transition:color .4s ease}
+/* rnav dot progress ring */
+.rnav-dot-wrap{position:relative;width:16px;height:16px;display:flex;align-items:center;justify-content:center}
+.rnav-dot{width:8px;height:8px;border-radius:50%;background:var(--bdr);border:none;cursor:pointer;transition:all .15s;padding:0;-webkit-tap-highlight-color:transparent;position:relative;z-index:1}
+.rnav-dot.on{background:var(--green);transform:scale(1.2)}
+.rnav-dot:hover:not(.on){background:var(--txt2)}
+.rnav-ring{position:absolute;inset:0;border-radius:50%;border:2px solid transparent;transition:border-color .4s ease}
 
 /* MAIN */
 .main{max-width:1180px;margin:0 auto;padding:4px 14px 80px}
@@ -243,43 +253,43 @@ GK:{
 tech:['Technika chwytania — pewność przy interwencjach, eliminowanie odbitych piłek','Gra nogą (krótka) — dokładność podań do 25 m przy rozgrywaniu od tyłu','Gra nogą (długa) — wybicia i dystrybucja na drugi koniec boiska','Spokój przy rozgrywaniu pod pressingiem rywala','Wyczucie wyjścia — decyzja o wyjściu z bramki lub pozostaniu na linii'],
 def:['Ustawienie w bramce — właściwy kąt, skracanie przestrzeni do strzału','Refleks przy strzale z bliskiej odległości','Dominacja w powietrzu — pewność przy centrach i rzutach rożnych','Gra głową lub pięścią — odprowadzenie piłki w bezpieczne miejsce','Odwaga i siła w bezpośrednich pojedynkach 1:1 z atakującym',{div:'ORGANIZACJA'},'Organizacja linii obrony — głośne prowadzenie ustawień partnerów','Komunikacja z obrońcami w trudnych momentach meczu'],
 press:['D→A: Szybkość i jakość dystrybucji po obronie — tempo przejścia do ataku','D→A: Wybór rozwiązania — krótkie podanie lub długie wybicie','A→D: Powrót na pozycję po ewentualnym wyjściu z bramki','Głośne prowadzenie gry przy pressingu własnego zespołu'],
-motor:['Wzrost minimum 188 cm — pokrycie przestrzeni bramki','Dynamika i eksplozywność — skoki, odbicia, przesunięcia w bramce','Odporność mentalna — reakcja po straconej bramce','Koncentracja bez wyraźnego spadku przez pełne 90 minut','Pewność siebie i naturalny autorytet w strefie obrony'],
+motor:['Wzrost minimum 188 cm — pokrycie przestrzeni bramki','Dynamika i eksplozywność — skoki, odbicia, przesunięcia w bramce',{div:'CHARAKTER'},'Reakcja po straconej bramce — szybki powrót do koncentracji, brak załamania','Odporność na presję — spokój przy trudnym rywalu i niekorzystnym wyniku','Komunikacja i przywództwo — aktywne głośne prowadzenie obrony przez 90 minut','Pewność siebie — zdecydowanie przy wyjściach, brak wahania w trudnych momentach'],
 },
 CB:{
 tech:['Podanie krótkie — spokój i dokładność przy rozgrywaniu od tyłu pod presją','Podanie długie — diagonale, zmiana strony gry, precyzja wybicia','Podanie progresywne — odwaga przy graniu do przodu gdy jest przestrzeń','Utrzymanie piłki i znalezienie rozwiązania pod pressingiem rywala','Gra przy ofensywnych stałych fragmentach — rogi, wolne'],
 def:['Bronienie 1:1 — wyczucie wejścia, właściwa odległość od rywala','Wślizg — skuteczność i wyczucie interwencji','Gra pozycyjna (strefowa) — utrzymanie kompaktności linii obrony','Czytanie gry — antycypacja podań i wychodzenie przed rywala','Gra powietrzna DEF — skuteczność i dominacja przy centrach i rogach','Taktyczne zachowanie — kiedy wyjść z linii, kiedy pozostać','Komunikacja i organizacja partnerów obrony','Koncentracja i dyscyplina przez 90 minut, minimum błędów indywidualnych',{div:'ATAK'},'Konstruktywna rozgrywka spod pressingu rywala','Zagrożenie przy ofensywnych stałych fragmentach — rogi, wolne'],
 press:['D→A: Szybkość przejścia w budowę gry po odegraniu piłki','A→D: Natychmiastowy pressing i odbiory po stracie piłki','Odwaga przy wychodzeniu z linii — antycypacja długich piłek za plecami','Cięcie linii podań rywali w strefie środkowej'],
-motor:['Siła i dynamika w bezpośrednich kontaktach fizycznych','Prędkość maksymalna — reakcja na podbiegi za plecy obrony','Eksplozywność — szybkość startu na 5-10 metrach (pierwszy krok)','Predyspozycje fizyczne — wzrost, masa, odporność na kontakt','Preferowana noga — lewa lub prawa, ważna dla strony ustawienia','Cechy przywódcze — głośne prowadzenie i naturalny autorytet','Odpowiedzialność mentalna i dyscyplina przez cały mecz'],
+motor:['Siła i dynamika w bezpośrednich kontaktach fizycznych','Prędkość maksymalna — reakcja na podbiegi za plecy obrony','Eksplozywność — szybkość startu na 5-10 metrach (pierwszy krok)','Predyspozycje fizyczne — wzrost, masa, odporność na kontakt','Preferowana noga — lewa lub prawa, ważna dla strony ustawienia',{div:'CHARAKTER'},'Przywództwo — naturalny autorytet, głośne prowadzenie linii obrony','Reakcja na błąd — czy wraca do zadań po pomyłce, czy odpuszcza','Dyscyplina i koncentracja przez pełne 90 minut — brak niepotrzebnych fauli i strat','Odporność na presję — spokój i pewność przy trudnym rywalu i niekorzystnym wyniku'],
 },
 FB:{
-tech:['Jakość dośrodkowań po wbiegnięciu po linii bocznej','Jakość dośrodkowań z pozycji statycznej lub po zatrzymaniu gry','Drybling 1:1 w strefie bocznej — overlap lub underlap','Kombinacja ze skrzydłowym — wyczucie i wzajemne rozumienie','Podanie do środkowego pomocnika ze strefy bocznej'],
+tech:['Jakość dośrodkowań po wbiegnięciu po linii bocznej','Jakość dośrodkowań z pozycji statycznej lub po zatrzymaniu gry','Drybling 1:1 w strefie bocznej — overlap lub underlap','Kombinacja ze skrzydłowym — timing wbiegnięć i wymiana pozycji','Podanie do środkowego pomocnika ze strefy bocznej'],
 def:['Bronienie 1:1 — wyczucie, właściwa odległość od skrzydłowego rywala','Wślizg — skuteczność i wyczucie interwencji','Taktyczne zachowanie — kompaktność linii obrony, krycie przestrzeni','Czytanie gry — antycypacja ruchów skrzydłowych i napastników rywala','Wsparcie stopera przy przesunięciach i zagrożeniach centralnych','Gra powietrzna DEF przy centrach i rogach','Komunikacja z partnerami — stoper i skrzydłowy własnego zespołu',{div:'ATAK'},'Aktywne wbiegnięcia ofensywne po linii bocznej','Tworzenie przewagi liczebnej w strefie bocznej'],
 press:['D→A: Szybkość wbiegnięcia ofensywnego po odegraniu piłki','A→D: Szybkość i skuteczność powrotu na pozycję obronną','Pressing na skrzydłowego lub bocznego obrońcę rywala','Organizacja przy defensywnych przesunięciach całej linii'],
-motor:['Prędkość maksymalna — kluczowa przy wbiegnięciach i powrotach','Wytrzymałość — powtarzalność wbiegnięć przez pełne 90 minut','Siła w bezpośrednich kontaktach ze skrzydłowymi rywala','Preferowana noga — zgodność z obsadzoną stroną boiska'],
+motor:['Prędkość maksymalna — kluczowa przy wbiegnięciach i powrotach','Wytrzymałość — powtarzalność wbiegnięć przez pełne 90 minut','Siła w bezpośrednich kontaktach ze skrzydłowymi rywala','Preferowana noga — zgodność z obsadzoną stroną boiska',{div:'CHARAKTER'},'Determinacja w duelach — walka o każdą piłkę na linii bocznej','Koncentracja — utrzymanie skupienia przy defensywnych obowiązkach przez 90 minut','Komunikacja z partnerami — informowanie o zagrożeniach na swojej stronie','Dyscyplina taktyczna — pilnowanie obowiązków obronnych mimo pokus ofensywnych'],
 },
 CM:{
 tech:['Podania krótkie — kombinowanie w małej przestrzeni pod presją','Podania długie — diagonale, zmiana strony, precyzja','Przyjęcie piłki pod presją — pewność pierwszego dotknięcia','Technika strzelecka — niebezpieczność ze średniego dystansu','Zagrywanie stałych fragmentów gry — rogi, rzuty wolne','Prowadzenie piłki — wyprowadzenie z trudnych sytuacji pod presją'],
-def:['Czytanie gry — antycypacja podań i ruchów rywali przed linią obrony','Agresywność i wyczucie przy odbiorze piłki — pojedynki pressingowe','Szybkość dostupowywania rywala z piłką','Gra pozycyjna — zasłanianie przestrzeni przed linią obrony','Aktywny promień działania — jak duży obszar skutecznie kontroluje','Siła w bezpośrednich duelach w środku pola',{div:'ATAK'},'Kreatywność i przegląd gry — nieoczekiwane rozwiązania pod presją','Orientacja w przestrzeni — stała aktywna oferta dla partnerów','Wsparcie ofensywy — wbiegnięcia do drugiej linii, udział w akcjach'],
+def:['Czytanie gry — antycypacja podań i ruchów rywali przed linią obrony','Odbiór piłki — agresywność, wyczucie i szybkość wychodzenia do rywala','Gra pozycyjna — zasłanianie przestrzeni przed linią obrony','Aktywny promień działania — jak duży obszar skutecznie kontroluje','Siła w bezpośrednich duelach w środku pola',{div:'ATAK'},'Kreatywność i przegląd gry — nieoczekiwane rozwiązania pod presją','Orientacja w przestrzeni — stała aktywna oferta dla partnerów','Wsparcie ofensywy — wbiegnięcia do drugiej linii, udział w akcjach'],
 press:['D→A: Szybkość przejścia w ofensywę i aktywna oferta do podania','A→D: Natychmiastowy pressing po stracie bez odpuszczania','Prowadzenie i organizacja pressingu własnego zespołu','Agresywność w odzyskiwaniu piłki przy wysokim pressingu'],
-motor:['Siła fizyczna w bezpośrednich duelach w środku pola','Wytrzymałość — wysoki wolumen gry przez 90 minut (cel 11 500 m)','Dynamika i eksplozywność przy przyspieszeniach i duelach','Zdolności organizacyjne i przywódcze w środku pola','Spokój i opanowanie w kluczowych momentach meczu','Inteligencja taktyczna — rozumienie rotacji i pozycjonowania'],
+motor:['Siła fizyczna w bezpośrednich duelach w środku pola','Wytrzymałość — wysoki wolumen gry przez 90 minut (cel 11 500 m)','Dynamika i eksplozywność przy przyspieszeniach i duelach',{div:'CHARAKTER'},'Decyzyjność pod presją — szybkie i trafne decyzje przy wysokim pressingu rywala','Odporność na błąd — reakcja po stracie piłki, natychmiastowy pressing','Przywództwo i organizacja — prowadzenie linii pomocników, kierowanie pressingiem','Spokój i opanowanie — utrzymanie rytmu gry w trudnych momentach meczu','Inteligencja taktyczna — rozumienie rotacji, pozycjonowania i zmian tempa gry'],
 },
 AM:{
 tech:['Pierwsze dotknięcie — jakość przyjęcia piłki pod presją między liniami','Drybling 1:1 — skuteczność w strefach między liniami rywala','Podania finalne — wyczucie i dokładność na ostatniego zawodnika','Podania przedfinalne — tworzenie klarownych sytuacji bramkowych','Zagrywanie stałych fragmentów — rzuty wolne, rogi','Technika strzelecka — ze średniego i krótkiego dystansu'],
 def:['Pressing na stoperów i bramkarza rywala w fazie bez piłki','Gra pozycyjna w bloku obronnym — dyscyplina, zasłanianie linii podań','Czytanie gry — przewidywanie możliwości rywala',{div:'ATAK'},'Ruch bez piłki — szukanie przestrzeni między liniami rywala','Stała oferta do podania — dostępność dla partnerów z różnych pozycji','Wykończenie z dystansu — strzały zza pola karnego','Wykończenie w polu karnym — dobitki i wbiegnięcia','Uzupełnienie do końcówki — wyczucie i trafność wbiegnięcia','Wpływ na mecz — kluczowe decyzje, podania na właściwy moment'],
-press:['D→A: Szybkość i skuteczność startu w ofensywie','A→D: Reaktywny pressing po stracie piłki','Aktywność w wysokim pressingu — dostupowywanie rozgrywki rywala','Dyscyplina pozycyjna w defensywnym bloku'],
-motor:['Dynamika i prędkość na krótkim dystansie, szybka zmiana kierunku','Wytrzymałość — aktywność pressingowa i ofensywna przez 90 minut','Pewność siebie i gotowość do brania odpowiedzialności w grze','Kreatywność i inteligencja — rozwiązywanie trudnych sytuacji','Koncentracja i stabilność psychiczna w kluczowych momentach'],
+press:['D→A: Szybkość i skuteczność startu w ofensywie','A→D: Reaktywny pressing po stracie piłki','Aktywność w wysokim pressingu — agresywne wychodzenie do rozgrywki rywala','Dyscyplina pozycyjna w defensywnym bloku'],
+motor:['Dynamika i prędkość na krótkim dystansie, szybka zmiana kierunku','Wytrzymałość — aktywność pressingowa i ofensywna przez 90 minut',{div:'CHARAKTER'},'Odwaga i odpowiedzialność — gotowość do brania piłki i podejmowania decyzji w trudnych momentach','Reakcja na stratę — natychmiastowy pressing bez odpuszczania','Kreatywność pod presją — szukanie nieoczekiwanych rozwiązań gdy gra jest zablokowana','Stabilność psychiczna — utrzymanie jakości gry przy niekorzystnym wyniku','Determinacja w ataku — nieustanna aktywność i szukanie szans na bramkę'],
 },
 W:{
-tech:['Drybling 1:1 — jakość prowadzenia i skuteczność przy rywalu','Drybling pod presją — utrzymanie piłki przy ciele w trudnych sytuacjach','Wykończenie preferowaną nogą — strzał, lob, obstrzał','Wykończenie słabszą nogą — groźność z nieoczekiwanych kątów','Jakość dośrodkowań po wbiegnięciu po linii bocznej','Jakość dośrodkowań z pozycji statycznej lub po cofnięciu piłki','Kombinacje z krajnym obrońcą — wyczucie i wzajemne rozumienie','Kombinacje ze środkowym pomocnikiem w strefie bocznej'],
-def:['Pressing na krajnego obrońcę rywala przy rozgrywaniu','Powroty do obrony — intensywność i odpowiedzialność','Krycie przestrzeni na linii bocznej w fazie bez piłki','Gra w bloku obronnym — dyscyplina i ustawienie pozycyjne','Nawracanie się na obrońców rywala w fazie obronnej (krycie)',{div:'ATAK'},'Ruch bez piłki — aktywne szukanie szerokich pozycji','Wbiegnięcie za linię obrony rywala','Siła w sytuacjach 1:1 z obrońcą — odwaga do bezpośredniego ataku','Uzupełnienie do końcówki z drugiej linii','Produktywność — gole i asysty, bezpośredni wpływ na wynik'],
-press:['D→A: Szybkość przełączenia do kontry po odbiorze piłki','A→D: Szybkość powrotu na pozycję obronną po stracie','Aktywność pressingowa na linii bocznej przy rozgrywaniu rywala','Dyscyplina w defensywnym bloku — niedopuszczenie do przewagi rywala'],
-motor:['Prędkość maksymalna — kluczowa w sytuacjach 1:1 z obrońcą','Eksplozywność — pierwsze przyspieszenie na 5-10 metrach','Wytrzymałość — powtarzalność sprintów i powrotów przez 90 minut','Koordynacja — praca z piłką w wysokim tempie ruchu','Odwaga do ryzyka w strefie ataku — drybling, strzały','Produktywność — skuteczność i wkład w wynik meczu'],
+tech:['Drybling 1:1 — jakość prowadzenia i skuteczność przy rywalu','Drybling pod presją — utrzymanie piłki przy ciele w trudnych sytuacjach','Wykończenie preferowaną nogą — strzał, lob, wolej','Wykończenie słabszą nogą — gotowość do strzału z każdej strony','Jakość dośrodkowań po wbiegnięciu po linii bocznej','Jakość dośrodkowań z pozycji statycznej lub po cofnięciu piłki','Kombinacje z bocznym obrońcą — timing wbiegnięć i wymiana pozycji','Kombinacje ze środkowym pomocnikiem w strefie bocznej'],
+def:['Pressing na bocznego obrońcę rywala przy rozgrywaniu','Powrót do obrony — intensywność i krycie przypisanego rywala','Krycie przestrzeni na linii bocznej w fazie bez piłki','Gra w bloku obronnym — dyscyplina i ustawienie pozycyjne',{div:'ATAK'},'Ruch bez piłki — aktywne szukanie szerokich pozycji','Wbiegnięcie za linię obrony rywala','Siła w sytuacjach 1:1 z obrońcą — odwaga do bezpośredniego ataku','Wbiegnięcie do pola karnego z drugiej linii','Produktywność — gole i asysty, bezpośredni wpływ na wynik'],
+press:['D→A: Szybkość przełączenia do kontry po odbiorze piłki','A→D: Szybkość powrotu na pozycję obronną po stracie','Dyscyplina w defensywnym bloku — niedopuszczenie do przewagi rywala'],
+motor:['Prędkość maksymalna — kluczowa w sytuacjach 1:1 z obrońcą','Eksplozywność — pierwsze przyspieszenie na 5-10 metrach','Wytrzymałość — powtarzalność sprintów i powrotów przez 90 minut','Koordynacja — praca z piłką w wysokim tempie ruchu',{div:'CHARAKTER'},'Odwaga do ryzyka — gotowość do wejścia w drybling nawet po nieudanej próbie','Reakcja na stratę — szybki powrót do obowiązków defensywnych bez marudzenia','Dyscyplina defensywna — pilnowanie obowiązków obronnych mimo naturalnej chęci do ataku','Skuteczność i głód gry — nastawienie na gole i asysty, mierzenie się z wynikiem'],
 },
 ST:{
 tech:['Przyjęcie piłki tyłem do bramki — kontrola, ochrona, obrót lub wyłożenie','Wykończenie preferowaną nogą — strzał, wolej, lob, dobitka','Wykończenie słabszą nogą — gotowość do strzału z każdej strony','Wykończenie głową — przy centrach i stałych fragmentach','Gra kombinacyjna na jeden kontakt z pomocnikami','Wybór miejsca w polu karnym — instynkt pozycyjny, praca nóg'],
 def:['Pressing na stoperów rywala przy rozgrywaniu od tyłu','Pressing na bramkarza rywala — zmuszanie do błędów lub długich piłek','Zasłanianie linii podań w bloku obronnym — kierunkowe zamknięcie',{div:'ATAK'},'Ruch bez piłki — nieustanne podbiegi za linię obrony rywala','Gra tyłem do bramki — utrzymanie, wyłożenie, obrót','Pojedynki powietrzne z obrońcami — skuteczność, siła w skoku','Aktywność w polu karnym — liczba dotknięć w niebezpiecznej strefie','Skuteczność wykończenia — konwersja sytuacji na bramki','Tworzenie przestrzeni dla pomocników przez ciągły ruch'],
-press:['D→A: Szybkość przełączenia — natychmiastowa gotowość do biegu','A→D: Intensywność pressingu i kierunkowe zamknięcie rywali','Agresywność przy pressingu na obrońców — wywieranie presji','Organizacja pressingu — kierowanie frontem ataku bez piłki'],
-motor:['Prędkość i eksplozywność — szybkość sprintów za obroną rywala','Powtarzalność sprintów przez 90 minut (cel 300 m w sprintach)','Siła fizyczna i odporność w kontaktach ze stoperami','Pewność siebie i głód gry — wewnętrzna motywacja do rozstrzygania','Odporność mentalna — reakcja po nieudanych sytuacjach bramkowych'],
+press:['D→A: Szybkość przełączenia — natychmiastowa gotowość do biegu','A→D: Intensywność pressingu i kierunkowe zamknięcie rywali','Organizacja pressingu — kierowanie frontem ataku bez piłki'],
+motor:['Prędkość i eksplozywność — szybkość sprintów za obroną rywala','Powtarzalność sprintów przez 90 minut (cel 300 m w sprintach)','Siła fizyczna i odporność w kontaktach ze stoperami',{div:'CHARAKTER'},'Głód gola — nieustanna chęć do zakończenia akcji, brak rezygnacji','Reakcja po nieudanym wykończeniu — natychmiastowy powrót do aktywności','Odporność na presję fizyczną — zachowanie spokoju przy twardym kryciu stopera','Determinacja w trudnych momentach — aktywność i zaangażowanie przy przegranym wyniku','Pewność siebie przy wykończeniu — brak wahania w sytuacjach bramkowych'],
 },
 };
 
@@ -364,6 +374,53 @@ function buildText(pl,idx,total){
   if(pl.matchNotes){lines.push('--- OGÓLNE NOTATKI Z MECZU ---',pl.matchNotes,'');}
   lines.push('==========================================');
   return lines.join('\n');
+}
+
+function calcProgress(pl){
+  var clKey=pl.pos?POS_TO_CL[pl.pos]:null;
+  var cl=clKey?CL[clKey]:{};
+  var total=0,done=0;
+  // checkboxes — each item (non-divider) counts
+  SECS.forEach(function(sec){
+    var items=cl[sec]||[];
+    items.forEach(function(item){
+      if(typeof item==='object'&&item.div)return;
+      total++;
+      var state=pl.chk[sec+'_'+(total-1-(SECS.reduce(function(a,s2){return s2===sec?a:a+(cl[s2]||[]).filter(function(x){return typeof x!=='object';}).length;},0)))];
+      // recount per-sec index properly
+    });
+  });
+  // recount correctly
+  total=0;done=0;
+  SECS.forEach(function(sec){
+    var items=cl[sec]||[],ci=0;
+    items.forEach(function(item){
+      if(typeof item==='object'&&item.div)return;
+      total++;
+      if(pl.chk[sec+'_'+ci])done++;
+      ci++;
+    });
+    // section note
+    total++;
+    if(pl.snotes[sec]&&pl.snotes[sec].trim())done++;
+  });
+  // match notes
+  total++;
+  if(pl.matchNotes&&pl.matchNotes.trim())done++;
+  // ratings: rec, rating, pot
+  total+=3;
+  if(pl.ratings.rec)done++;
+  if(pl.ratings.rating)done++;
+  if(pl.ratings.pot)done++;
+  if(total===0)return 0;
+  return Math.round(done/total*100);
+}
+
+function progColor(pct){
+  if(pct<30)return '#ef4444';
+  if(pct<60)return '#eab308';
+  if(pct<85)return '#3b82f6';
+  return '#b8f542';
 }
 
 function App(){
@@ -499,13 +556,15 @@ function App(){
         h('div',{className:'hdr-s'},'SK Sigma Olomouc')
       ),
       h('div',{className:'save-dot'+(showSaved?' show':'')}),
-      h('div',{className:'hdr-right'},
-        total>1&&h('div',{className:'hdr-player'},
+      total>1&&h('div',{className:'hdr-center'},
+        h('div',{className:'hdr-player'},
           h('div',{className:'hdr-player-name'},
             (players[activeIdx].pos ? players[activeIdx].pos+' · ' : '')+
             (players[activeIdx].name||'—')
           )
-        ),
+        )
+      ),
+      h('div',{className:'hdr-right'},
         h('button',{className:'hdr-btn add',onClick:addPlayer},
           h('span',{className:'btn-short'},'+'),
           h('span',{className:'btn-full'},'+ Dodaj zawodnika')
@@ -533,7 +592,12 @@ function App(){
       h('button',{className:'rnav-btn',onClick:function(){goTo(activeIdx-1);},disabled:activeIdx===0,title:'Poprzedni zawodnik'},'↑'),
       h('div',{className:'rnav-dots'},
         players.map(function(pl,i){
-          return h('button',{key:pl.id,className:'rnav-dot'+(i===activeIdx?' on':''),onClick:function(){goTo(i);},title:'Zawodnik '+(i+1)});
+          var pct=calcProgress(pl);
+          var col=progColor(pct);
+          return h('div',{key:pl.id,className:'rnav-dot-wrap'},
+            h('div',{className:'rnav-ring',style:{borderColor:col,opacity:pct>0?1:0}}),
+            h('button',{className:'rnav-dot'+(i===activeIdx?' on':''),onClick:function(){goTo(i);},title:'Zawodnik '+(i+1)+' — '+pct+'%'})
+          );
         })
       ),
       h('button',{className:'rnav-btn',onClick:function(){goTo(activeIdx+1);},disabled:activeIdx===total-1,title:'Następny zawodnik'},'↓')
@@ -552,6 +616,17 @@ function App(){
             h('div',{className:'player-divider-line'}),
             players.length>1&&h('button',{className:'remove-btn',onClick:function(){removePlayer(idx);}},'Usuń')
           ),
+          /* progress bar */
+          (function(){
+            var pct=calcProgress(pl);
+            var col=progColor(pct);
+            return h('div',{className:'prog-row'},
+              h('div',{className:'prog-bar'},
+                h('div',{className:'prog-fill',style:{width:pct+'%',background:col}})
+              ),
+              h('span',{className:'prog-pct',style:{color:col}},pct+'%')
+            );
+          })(),
 
           /* name */
           h('input',{className:'fi nm',placeholder:'Imię i nazwisko zawodnika...',value:pl.name,
