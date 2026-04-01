@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SK Sigma — Scouting Tool</title>
+<title>Scouting Tool</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%23080d12'/%3E%3Ccircle cx='13' cy='13' r='7' fill='none' stroke='%23b8f542' stroke-width='2.5'/%3E%3Cline x1='18.5' y1='18.5' x2='26' y2='26' stroke='%23b8f542' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -19,7 +20,7 @@ body{background:var(--bg);color:var(--txt);font-family:'Barlow',sans-serif;font-
 /* HEADER */
 .hdr{background:var(--bg2);border-bottom:1px solid var(--bdr);padding:10px 14px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:50;flex-wrap:nowrap}
 .hdr-center{position:absolute;left:50%;transform:translateX(-50%);pointer-events:none}
-.logo{width:34px;height:34px;min-width:34px;background:var(--blue);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:7px;color:#fff;text-align:center;line-height:1.3}
+.logo{width:34px;height:34px;min-width:34px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .hdr-info{min-width:0}
 .hdr-t{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:16px;letter-spacing:.07em;text-transform:uppercase;white-space:nowrap}
 .hdr-s{font-size:9px;color:var(--txt2);letter-spacing:.09em;text-transform:uppercase}
@@ -550,10 +551,15 @@ function App(){
   return h('div',null,
     /* HEADER */
     h('div',{className:'hdr'},
-      h('div',{className:'logo'},'SK',h('br'),'SIGMA'),
+      h('div',{className:'logo'},
+        h('svg',{width:34,height:34,viewBox:'0 0 34 34',fill:'none',xmlns:'http://www.w3.org/2000/svg'},
+          h('circle',{cx:17,cy:17,r:17,fill:'#0e1820'}),
+          h('circle',{cx:14,cy:14,r:7,stroke:'#b8f542',strokeWidth:2.5,fill:'none'}),
+          h('line',{x1:19.5,y1:19.5,x2:27,y2:27,stroke:'#b8f542',strokeWidth:2.5,strokeLinecap:'round'})
+        )
+      ),
       h('div',{className:'hdr-info'},
-        h('div',{className:'hdr-t'},'Scouting Tool'),
-        h('div',{className:'hdr-s'},'SK Sigma Olomouc')
+        h('div',{className:'hdr-t'},'Scouting Tool')
       ),
       h('div',{className:'save-dot'+(showSaved?' show':'')}),
       total>1&&h('div',{className:'hdr-center'},
