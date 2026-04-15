@@ -307,29 +307,64 @@ motor:['Prędkość i eksplozywność — szybkość sprintów za obroną rywala
 var SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition || null;
 var _activeMicId = null;
 var _activeRec = null;
+var _micShouldContinue = false;
+var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
 function startMic(fieldId, onResult, onEnd){
   if(!SpeechRec){alert('Twoja przeglądarka nie obsługuje rozpoznawania mowy. Użyj Chrome lub Edge.');return;}
   if(_activeRec){_activeRec.stop();_activeRec=null;}
-  var rec = new SpeechRec();
-  rec.lang = 'pl-PL';
-  rec.continuous = true;
-  rec.interimResults = false;
+  _micShouldContinue = true;
   _activeMicId = fieldId;
+
+  function createRec(){
+    var rec = new SpeechRec();
+    rec.lang = 'pl-PL';
+    rec.continuous = !isMobile;
+    rec.interimResults = false;
+    rec.maxAlternatives = 1;
+    rec.onresult = function(e){
+      var transcript = '';
+      for(var i=e.resultIndex;i<e.results.length;i++){
+        if(e.results[i].isFinal) transcript += e.results[i][0].transcript + ' ';
+      }
+      var clean = transcript.trim();
+      /* filter out noise — ignore results shorter than 3 chars or all same char */
+      if(clean && clean.length >= 3 && !/^(.)\1+$/i.test(clean)){
+        onResult(clean);
+      }
+    };
+    rec.onend = function(){
+      /* on mobile, auto-restart if user hasn't stopped */
+      if(isMobile && _micShouldContinue){
+        try{rec=createRec();_activeRec=rec;rec.start();}catch(e){}
+      } else if(!isMobile){
+        _activeMicId=null;_activeRec=null;
+        if(_micShouldContinue){_micShouldContinue=false;onEnd();}
+      } else {
+        _activeMicId=null;_activeRec=null;onEnd();
+      }
+    };
+    rec.onerror = function(e){
+      if(e.error==='no-speech'&&isMobile&&_micShouldContinue){
+        /* no-speech on mobile is normal — just restart */
+        try{setTimeout(function(){if(_micShouldContinue){rec=createRec();_activeRec=rec;rec.start();}},200);}catch(err){}
+      } else {
+        _micShouldContinue=false;_activeMicId=null;_activeRec=null;onEnd();
+      }
+    };
+    return rec;
+  }
+
+  var rec = createRec();
   _activeRec = rec;
-  rec.onresult = function(e){
-    var transcript = '';
-    for(var i=e.resultIndex;i<e.results.length;i++){
-      if(e.results[i].isFinal) transcript += e.results[i][0].transcript + ' ';
-    }
-    if(transcript.trim()) onResult(transcript.trim());
-  };
-  rec.onend = function(){_activeMicId=null;_activeRec=null;onEnd();};
-  rec.onerror = function(){_activeMicId=null;_activeRec=null;onEnd();};
-  rec.start();
+  try{rec.start();}catch(e){_micShouldContinue=false;onEnd();}
 }
 
-function stopMic(){if(_activeRec){_activeRec.stop();_activeRec=null;_activeMicId=null;}}
+function stopMic(){
+  _micShouldContinue=false;
+  if(_activeRec){try{_activeRec.stop();}catch(e){}; _activeRec=null;}
+  _activeMicId=null;
+}
 
 function MicBtn(props){
   var fieldId=props.fieldId,onResult=props.onResult;
