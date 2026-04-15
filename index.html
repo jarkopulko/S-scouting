@@ -136,7 +136,15 @@ body{background:var(--bg);color:var(--txt);font-family:'Barlow',sans-serif;font-
 .rsel:focus{border-color:var(--blue2)}
 .rsel option{background:var(--card)}
 
-/* MATCH NOTES */
+/* MIC BUTTON */
+.mic-wrap{position:relative;display:flex;align-items:flex-start}
+.mic-wrap textarea{flex:1}
+.mic-btn{width:30px;min-width:30px;height:30px;margin-left:6px;margin-top:2px;background:transparent;border:1.5px solid var(--bdr);border-radius:6px;color:var(--muted);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.mic-btn:hover{border-color:var(--txt2);color:var(--txt)}
+.mic-btn.active{border-color:var(--red);color:var(--red);background:var(--red-bg);animation:pulse .8s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.mic-btn.done{border-color:var(--green);color:var(--green)}
+@media print{.mic-btn{display:none!important}}
 .match-notes{width:100%;background:var(--card);border:1px solid var(--bdr);border-radius:9px;padding:11px 14px;color:var(--txt2);font-family:'Barlow',sans-serif;font-size:16px;outline:none;resize:none;min-height:90px;line-height:1.65;transition:border-color .15s}
 .match-notes:focus{border-color:var(--blue2);color:var(--txt)}
 .match-notes::placeholder{color:var(--muted);font-style:italic}
@@ -295,6 +303,65 @@ motor:['Prędkość i eksplozywność — szybkość sprintów za obroną rywala
 },
 };
 
+/* ── Speech Recognition ──────────────────────────────────────────── */
+var SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition || null;
+var _activeMicId = null;
+var _activeRec = null;
+
+function startMic(fieldId, onResult, onEnd){
+  if(!SpeechRec){alert('Twoja przeglądarka nie obsługuje rozpoznawania mowy. Użyj Chrome lub Edge.');return;}
+  if(_activeRec){_activeRec.stop();_activeRec=null;}
+  var rec = new SpeechRec();
+  rec.lang = 'pl-PL';
+  rec.continuous = true;
+  rec.interimResults = false;
+  _activeMicId = fieldId;
+  _activeRec = rec;
+  rec.onresult = function(e){
+    var transcript = '';
+    for(var i=e.resultIndex;i<e.results.length;i++){
+      if(e.results[i].isFinal) transcript += e.results[i][0].transcript + ' ';
+    }
+    if(transcript.trim()) onResult(transcript.trim());
+  };
+  rec.onend = function(){_activeMicId=null;_activeRec=null;onEnd();};
+  rec.onerror = function(){_activeMicId=null;_activeRec=null;onEnd();};
+  rec.start();
+}
+
+function stopMic(){if(_activeRec){_activeRec.stop();_activeRec=null;_activeMicId=null;}}
+
+function MicBtn(props){
+  var fieldId=props.fieldId,onResult=props.onResult;
+  var as=_us(false),active=as[0],setActive=as[1];
+  var ds=_us(false),done=ds[0],setDone=ds[1];
+  function toggle(){
+    if(active){stopMic();setActive(false);}
+    else{
+      setDone(false);
+      startMic(fieldId,
+        function(t){onResult(t);},
+        function(){setActive(false);setDone(true);setTimeout(function(){setDone(false);},1500);}
+      );
+      setActive(true);
+    }
+  }
+  if(!SpeechRec)return null;
+  return h('button',{
+    className:'mic-btn'+(active?' active':done?' done':''),
+    onClick:toggle,
+    title:active?'Zatrzymaj nagrywanie':'Nagraj głos',
+    type:'button'
+  }, active?'⏹':'🎙');
+}
+
+function withMic(textarea, fieldId, onAppend){
+  return h('div',{className:'mic-wrap'},
+    textarea,
+    h(MicBtn,{fieldId:fieldId, onResult:function(t){onAppend(t);}})
+  );
+}
+
 function autoH(el){if(!el)return;el.style.height='auto';el.style.height=el.scrollHeight+'px';}
 
 function mkPlayer(){
@@ -325,9 +392,13 @@ function ClSection(props){
         h('span',{className:'ci-lbl'},item)
       ),
       h('div',{className:'ci-note'+(state!==null?' show':'')},
-        h('textarea',{placeholder:'Komentarz — dodaj szczegół...',value:getCn(sec,ci),rows:1,
-          onChange:function(e){setCn(sec,ci,e.target.value);autoH(e.target);},
-          onFocus:function(e){autoH(e.target);}})
+        withMic(
+          h('textarea',{placeholder:'Komentarz — dodaj szczegół...',value:getCn(sec,ci),rows:1,
+            onChange:function(e){setCn(sec,ci,e.target.value);autoH(e.target);},
+            onFocus:function(e){autoH(e.target);}}),
+          'ci-'+sec+'-'+ci,
+          function(t){setCn(sec,ci,(getCn(sec,ci)?getCn(sec,ci)+' ':'')+t);}
+        )
       )
     );
   });
@@ -335,9 +406,13 @@ function ClSection(props){
     h('div',{className:'cl-title'},SEC_PL[sec]),rows,
     h('div',{className:'sec-note-label'},'Uwagi do sekcji'),
     h('div',{className:'sec-note'},
-      h('textarea',{placeholder:'Ogólne uwagi — co wyróżniało zawodnika w tej sekcji...',value:snotes[sec]||'',rows:2,
-        onChange:function(e){usn(sec,e.target.value);autoH(e.target);},
-        onFocus:function(e){autoH(e.target);}})
+      withMic(
+        h('textarea',{placeholder:'Ogólne uwagi — co wyróżniało zawodnika w tej sekcji...',value:snotes[sec]||'',rows:2,
+          onChange:function(e){usn(sec,e.target.value);autoH(e.target);},
+          onFocus:function(e){autoH(e.target);}}),
+        'sn-'+sec,
+        function(t){usn(sec,(snotes[sec]?snotes[sec]+' ':'')+t);}
+      )
     )
   );
 }
@@ -708,11 +783,15 @@ function App(){
 
           /* match notes */
           h('div',{className:'stitle'},'Ogólne notatki z meczu'),
-          h('textarea',{className:'match-notes',
-            placeholder:'Kontekst meczu, wynik, styl gry drużyny, warunki obserwacji, cokolwiek istotnego...',
-            value:pl.matchNotes,rows:4,
-            onChange:function(e){upd(idx,'matchNotes',e.target.value);autoH(e.target);},
-            onFocus:function(e){autoH(e.target);}}),
+          withMic(
+            h('textarea',{className:'match-notes',
+              placeholder:'Kontekst meczu, wynik, styl gry drużyny, warunki obserwacji, cokolwiek istotnego...',
+              value:pl.matchNotes,rows:4,
+              onChange:function(e){upd(idx,'matchNotes',e.target.value);autoH(e.target);},
+              onFocus:function(e){autoH(e.target);}}),
+            'mn-'+idx,
+            function(t){upd(idx,'matchNotes',(pl.matchNotes?pl.matchNotes+' ':'')+t);}
+          ),
 
           /* buttons */
           h('button',{className:'copy-btn'+(isCopied?' copied':''),onClick:function(){doCopy(idx);},disabled:!pl.pos||!pl.name},
