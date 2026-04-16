@@ -211,8 +211,26 @@ body{background:var(--bg);color:var(--txt);font-family:'Barlow',sans-serif;font-
   .rsel{background:#f5f5f5!important;border:1pt solid #ddd!important;color:#111!important;min-height:auto!important}
 }
 
-/* MOBILE */
-@media(max-width:680px){
+/* STICKY COLUMN HEADER — desktop only */
+.col-sticky{display:none}
+@media(min-width:900px){
+  .col-sticky{display:flex;align-items:center;justify-content:space-between;position:sticky;top:57px;z-index:30;background:var(--card);border-bottom:1px solid var(--bdr);margin:0 -16px 12px;padding:7px 16px;border-radius:0}
+  .col-sticky-name{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:14px;color:var(--green);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .col-sticky-pos{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;color:var(--muted);letter-spacing:.08em}
+  /* hide main header center indicator on desktop */
+  .hdr-center{display:none}
+}
+@media(min-width:900px){
+  .players-wrap{display:flex;flex-direction:row;align-items:flex-start;gap:16px}
+  .player-section{flex:1;min-width:0;border:1px solid var(--bdr);border-radius:12px;padding:14px 16px 20px;background:var(--card)}
+  .player-divider{padding:0 0 10px;margin-bottom:4px}
+  .player-divider-line{display:none}
+  .rnav{display:none!important}
+  .main{max-width:none;padding:4px 16px 60px}
+}
+@media(max-width:899px){
+  .players-wrap{display:block}
+}
   .hdr-s{display:none}
   .hdr-btn.add span.btn-full{display:none}
   .hdr-btn.add span.btn-short{display:inline}
@@ -722,10 +740,16 @@ function App(){
 
     /* PLAYERS */
     h('div',{className:'main'},
+      h('div',{className:'players-wrap'},
       players.map(function(pl,idx){
         var clKey=pl.pos?POS_TO_CL[pl.pos]:null;
         var isCopied=!!copied[idx];
         return h('div',{key:pl.id,id:'ps-'+pl.id,'data-pid':String(pl.id),className:'player-section'},
+          /* sticky col header — desktop */
+          h('div',{className:'col-sticky'},
+            h('span',{className:'col-sticky-name'},(pl.pos?pl.pos+' · ':'')+( pl.name||'Zawodnik '+(idx+1))),
+            players.length>1&&h('button',{className:'remove-btn',style:{marginLeft:'auto'},onClick:function(){removePlayer(idx);}},'Usuń')
+          ),
           /* divider */
           h('div',{className:'player-divider'},
             h('div',{className:'player-divider-line'}),
@@ -832,13 +856,14 @@ function App(){
           h('button',{className:'copy-btn'+(isCopied?' copied':''),onClick:function(){doCopy(idx);},disabled:!pl.pos||!pl.name},
             isCopied?'✓  Skopiowano':'Kopiuj dane'
           ),
-          h('button',{className:'pdf-btn',onClick:function(){window.print();}},'📄  Zapisz jako PDF'),
-          idx===players.length-1&&h('div',{className:'tip-box'},
-            h('strong',null,'Jak to działa: '),
-            'Wypełnij checklistę i notatki podczas oglądania meczu. Kliknij "Kopiuj dane" — dane trafią do schowka.'
-          )
+          h('button',{className:'pdf-btn',onClick:function(){window.print();}},'📄  Zapisz jako PDF')
         );
       })
+      ), /* end players-wrap */
+      h('div',{className:'tip-box',style:{marginTop:14}},
+        h('strong',null,'Jak to działa: '),
+        'Wypełnij checklistę i notatki podczas oglądania meczu. Kliknij "Kopiuj dane" — dane trafią do schowka.'
+      )
     )
   );
 }
