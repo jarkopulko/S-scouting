@@ -221,15 +221,16 @@ body{background:var(--bg);color:var(--txt);font-family:'Barlow',sans-serif;font-
   .hdr-center{display:none}
 }
 @media(min-width:900px){
-  .players-wrap{display:flex;flex-direction:row;align-items:flex-start;gap:16px}
-  .player-section{flex:1;min-width:0;border:1px solid var(--bdr);border-radius:12px;padding:14px 16px 20px;background:var(--card)}
-  .player-divider{padding:0 0 10px;margin-bottom:4px}
-  .player-divider-line{display:none}
-  .rnav{display:none!important}
+  .players-wrap.multi{display:flex;flex-direction:row;align-items:flex-start;gap:16px}
+  .players-wrap.multi .player-section{flex:1;min-width:0;border:1px solid var(--bdr);border-radius:12px;padding:14px 16px 20px;background:var(--card)}
+  .players-wrap.multi .player-divider{padding:0 0 10px;margin-bottom:4px}
+  .players-wrap.multi .player-divider-line{display:none}
+  .rnav-desktop-hide{display:none!important}
   .main{max-width:none;padding:4px 16px 60px}
 }
 @media(max-width:899px){
   .players-wrap{display:block}
+  .col-sticky{display:none!important}
 }
   .hdr-s{display:none}
   .hdr-btn.add span.btn-full{display:none}
@@ -723,7 +724,7 @@ function App(){
     ),
 
     /* RIGHT NAV — only when >1 player */
-    total>1&&h('div',{className:'rnav'},
+    total>1&&h('div',{className:'rnav'+(total>1?' rnav-desktop-hide':'')},
       h('button',{className:'rnav-btn',onClick:function(){goTo(activeIdx-1);},disabled:activeIdx===0,title:'Poprzedni zawodnik'},'↑'),
       h('div',{className:'rnav-dots'},
         players.map(function(pl,i){
@@ -740,7 +741,7 @@ function App(){
 
     /* PLAYERS */
     h('div',{className:'main'},
-      h('div',{className:'players-wrap'},
+      h('div',{className:'players-wrap'+(total>1?' multi':'')},
       players.map(function(pl,idx){
         var clKey=pl.pos?POS_TO_CL[pl.pos]:null;
         var isCopied=!!copied[idx];
